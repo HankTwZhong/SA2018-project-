@@ -10,3 +10,9 @@ C:\Users\cmf15bs\Desktop\pingHost_Project\pingHost_Project\obj\Debug\pingHost_Pr
 C:\Users\cmf15bs\Desktop\pingHost_Project\pingHost_Project\bin\Debug\pingHost_Project.exe
 C:\Users\cmf15bs\Desktop\pingHost_Project\pingHost_Project\bin\Debug\pingHost_Project.pdb
 C:\Users\cmf15bs\Desktop\pingHost_Project\pingHost_Project\obj\Debug\pingHost_Project.csprojResolveAssemblyReference.cache
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\bin\Debug\pingHost_Project.exe.config
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\obj\Debug\pingHost_Project.exe
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\obj\Debug\pingHost_Project.pdb
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\bin\Debug\pingHost_Project.exe
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\bin\Debug\pingHost_Project.pdb
+C:\Users\Hank\Documents\SA2018-project-\106598024\pingHost_Project\pingHost_Project\obj\Debug\pingHost_Project.csprojResolveAssemblyReference.cache
