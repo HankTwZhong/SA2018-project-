@@ -39,7 +39,7 @@
         newHostName: undefined,
         ipAddress: undefined,
         buttonDisable:false,
-        btnDisableTime:3000,
+        btnDisableTime:200,
         css: {
           table: {
             tableClass: 'ui blue selectable celled stackable attached table',
@@ -116,12 +116,13 @@
             ipAddress: this.ipAddress
           })
           .then((res) => {
-          var scope = this
+            console.log(res)
+            var scope = this
             setTimeout(function(){
               console.log('after '+scope.btnDisableTime/1000+' sec buttom will enable')
               scope.refreshed()
                scope.buttonDisable = false
-            },scope.btnDisableTime)
+            },scope.btnDisableTime)          
             this.initForm()
           }).catch((err) => {
             console.log(err)
@@ -140,12 +141,8 @@
           hostName:hostData.hostName
         })
         .then((res)=>{
-          var scope = this
-            setTimeout(function(){
-              console.log('after '+scope.btnDisableTime/1000+' sec buttom will enable')
-              scope.refreshed()
-              scope.buttonDisable = false
-            },scope.btnDisableTime)
+           this.buttonDisable = false
+           this.refreshed()
         })
       }
     }
