@@ -8,7 +8,7 @@ function saveData(hostList){
 }
 function readData(callback){
   fs.readFile("./hostList.txt", "utf8", function(err, data){
-    if(data!=undefined)
+    if(data!== undefined || data !==[])
     callback(JSON.parse(data))
   })
 }

@@ -1,1 +1,1 @@
-[{"hostName":"Google's Host","ipAddress":"www.google.com"},{"hostName":"Johnson Host","ipAddress":"140.124.181.xx"},{"hostName":"what","ipAddress":"whatApp.com"}]
+[{"hostName":"Google's Host","ipAddress":"www.google.com"}]
