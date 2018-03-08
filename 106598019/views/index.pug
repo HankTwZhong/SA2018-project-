@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  h1= "Please Enter Your IP Name"
+  <form action='/search' method='post'>
+    <input type='text' name='ipName'>
+    <input type='submit' value='開始搜尋'>
+  </form>
+  h2= warning
+
+block ipList
+  table(id='fruit-animal-vehicle')
+    tr
+      th 網站名稱
+      th IP位址
+      th 狀態
+    each host in hostList
+      tr
+        th #{host.hostname}
+        th #{host.ip}
+        th
+          if host.status == 'Down'
+            <div id='down'>
+              p Down 
+            </div>
+          if host.status == 'OK'
+            <div id='ok'>
+              p OK
+            </div>
+      tr
+
+
+
+
