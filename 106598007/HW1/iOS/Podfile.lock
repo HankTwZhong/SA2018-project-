@@ -1,0 +1,25 @@
+PODS:
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - ChameleonFramework (2.1.0):
+    - ChameleonFramework/Default (= 2.1.0)
+  - ChameleonFramework/Default (2.1.0)
+  - PureLayout (3.0.2)
+
+DEPENDENCIES:
+  - Bolts
+  - ChameleonFramework
+  - PureLayout
+
+SPEC CHECKSUMS:
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  ChameleonFramework: d21a3cc247abfe5e37609a283a8238b03575cf64
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
+
+PODFILE CHECKSUM: 3aebed9e987386efef32501a3cdc75f4f22e2823
+
+COCOAPODS: 1.4.0
