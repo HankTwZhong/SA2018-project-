@@ -1,0 +1,159 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('myapp:server');
+var http = require('http');
+var nmap = require('node-nmap'); //加入node-nmap
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || '3000');
+app.set('port', port);
+
+/**
+ * Create HTTP server.
+ */
+
+var server = http.createServer(app);
+
+
+
+
+
+var hostlist = new Array();
+hostlist[0] = 'www.youtube.com';
+hostlist[1] = 'www.google.com';
+hostlist[2] = '123.123.123.123';
+hostlist[3] = '127.0.0.1';
+
+io = require('socket.io').listen(server); //加入socket.io
+io.sockets.on('connection', function(socket) {
+
+	socket.on('error',function(){
+		console.log("error");
+	});
+
+	//首頁監控運行
+	socket.on('start', function(){
+    console.log("後台開始掃描Host");
+    socket.emit('scan_list', hostlist);
+
+    nmap.nmapLocation = "nmap"; //default
+
+    var quickscan = new Array();
+
+    for (var key in hostlist) {
+      quickscan[key] = new nmap.QuickScan(hostlist[key]);
+ 
+      quickscan[key].on('complete', function(data){
+        console.log("掃描完成");
+        console.log(data);
+        if(data.length > 0){
+          socket.emit('scan_data', data);
+        }
+        
+      });
+       
+      quickscan[key].on('error', function(error){
+        console.log(error);
+      });
+       
+      quickscan[key].startScan();
+    }
+  });
+  
+
+  //新增
+	socket.on('add', function(data){
+    console.log('add -> '+data);
+    hostlist.push(data);
+    console.log(hostlist);
+  });
+  
+  //刪除
+	socket.on('del', function(host,ip){
+    console.log('del -> '+host+' & '+ip);
+    if(hostlist.indexOf(host) > -1){
+      hostlist.splice(hostlist.indexOf(host), 1);
+    }
+    if(hostlist.indexOf(ip)>-1){
+      hostlist.splice(hostlist.indexOf(ip), 1);
+    }
+    
+    console.log(hostlist);
+	});
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
