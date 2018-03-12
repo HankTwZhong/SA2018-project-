@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Component;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;

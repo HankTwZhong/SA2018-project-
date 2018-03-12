@@ -3,6 +3,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JList;
@@ -15,6 +16,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
@@ -71,7 +73,27 @@ public class HostDemo  {
 		model.addColumn("Status");
 		model.addColumn("Last Check");
 		table.setModel(model);
+		table.getColumn("Last Check").setPreferredWidth(120);
 		scrollPane.setViewportView(table);
+		//蓋便表格顏色
+		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer() {
+			             public Component getTableCellRendererComponent(JTable table, Object value,
+			                     boolean isSelected, boolean hasFocus, int row, int column) {
+			                 Component cell = super.getTableCellRendererComponent  
+			                         (table, value, isSelected, hasFocus, row, column);
+			                 if(value.equals("OK") ) {
+			                	 cell.setBackground(Color.GREEN);
+			                	 cell.setForeground(Color.black);
+			                 }else {
+			                	 cell.setBackground(Color.RED);
+			                	 cell.setForeground(Color.white);
+			                 }
+			                     
+			 
+			                 return cell;
+			             }
+		};
+		table.getColumn("Status").setCellRenderer(tcr);
 		
 		textField = new JTextField();
 		textField.setBounds(22, 16, 139, 21);
@@ -116,20 +138,7 @@ public class HostDemo  {
 		
 	}
 	
-//	private void RunTest()
-//	{		
-//		
-//			for(int i=0;i<list.size();i++) 
-//			{
-//				if(list.get(i).getStatus()) {
-//					model.addRow(new Object[] {list.get(i).getName(),list.get(i).getIP(),"OK"});
-//				}else {
-//					model.addRow(new Object[] {list.get(i).getName(),list.get(i).getIP(),"Down"});
-//				}
-//					
-//			}
-//					
-//	}
+
 	
 	
 }
