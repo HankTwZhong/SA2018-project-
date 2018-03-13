@@ -1,3 +1,4 @@
+package control;
 import java.io.IOException;
 import java.net.*;
 import java.net.UnknownHostException;
@@ -19,14 +20,14 @@ public class Host {
 			Status=address.isReachable(1000);
 			if(!Status) {
 				HostName=url;
-				IP=null;
+				IP=" ";
 			}
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			HostName=url;
 			Status=false;
-			IP=null;
+			IP=" ";
 		} 
 	}
 	

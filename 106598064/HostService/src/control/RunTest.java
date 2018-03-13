@@ -1,7 +1,10 @@
+package control;
 import java.awt.Color;
 import java.awt.Component;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -37,8 +40,44 @@ public class RunTest extends java.util.TimerTask{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}	
+	}
+	public void deleteHost(String s) {
+		int target=0;
+		boolean flag=false;
+		ArrayList<Host> temp=new ArrayList();
+		for(int i=0;i<list.size();i++) {
+			if(list.get(i).getName().equals(s)||list.get(i).getIP().equals(s)) {
+				target=i;
+				flag=true;
+			}else {
+				temp.add(list.get(i));
+			}
 		}
 		
+		if(flag) {
+			list.remove(target);				
+		}
+		model.setRowCount(0);
+		run();
+		
+		
+		try {
+			FileWriter fw = new FileWriter("test.txt");
+			for(int i=0;i<temp.size();i++) {
+				if(i==temp.size()-1) {
+					fw.write(temp.get(i).getName());
+				}else {
+					fw.write(temp.get(i).getName()+"\r\n");
+				}
+				
+			}
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 }

@@ -1,3 +1,4 @@
+package view;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,6 +10,11 @@ import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.JLabel;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Timer;
@@ -18,6 +24,10 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+
+import control.Host;
+import control.RunTest;
+
 import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -108,28 +118,73 @@ public class HostDemo  {
 				RunTest r=new RunTest(list,model);
 				r.setHost(s);
 				textField.setText("");
+				try {
+					File f=new File("test.txt");
+					FileWriter fw = new FileWriter("test.txt",true);
+					if(f.length()==0) {
+						fw.write(s);						
+					}else {
+						fw.write("\r\n"+s);
+					}
+					fw.flush();
+					fw.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
-		btnNewButton.setBounds(297, 14, 87, 23);
+		btnNewButton.setBounds(213, 14, 87, 23);
 		frame.getContentPane().add(btnNewButton);
 		
+		JButton btnDelete = new JButton("delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String s=textField.getText();
+				RunTest r=new RunTest(list,model);
+				r.deleteHost(s);
+				textField.setText("");
+			}
+		});
+		btnDelete.setBounds(320, 14, 87, 23);
+		frame.getContentPane().add(btnDelete);
 		
 		
-		Host a = null;
-		Host b = null;
-		Host c = null;
 		try {
-			a = new Host("www.google.com.tw");
-			list.add(a);
-			b=new Host("www.ntut.edu.tw");
-			list.add(b);
-			c=new Host("123");
-			list.add(c);
-			
-		} catch (IOException e) {
+			FileReader fr = new FileReader("test.txt");
+			BufferedReader br = new BufferedReader(fr);
+	        String line;
+			try {
+				while((line = br.readLine())!=null)
+				{				
+						Host a=new Host(line);
+						list.add(a);
+						//System.out.print(line);			
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			e1.printStackTrace();
+		} 
+		
+//		Host a = null;
+//		Host b = null;
+//		Host c = null;
+//		try {
+//			a = new Host("www.google.com.tw");
+//			list.add(a);
+//			b=new Host("www.ntut.edu.tw");
+//			list.add(b);
+//			c=new Host("123");
+//			list.add(c);
+//			
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		//RunTest();
 		Timer timer = new Timer();  
@@ -137,10 +192,6 @@ public class HostDemo  {
 		
 		
 	}
-	
-
-	
-	
 }
 
 
