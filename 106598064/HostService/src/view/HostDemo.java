@@ -115,22 +115,24 @@ public class HostDemo  {
 			public void actionPerformed(ActionEvent e) {
 
 				String s=textField.getText();
-				RunTest r=new RunTest(list,model);
-				r.setHost(s);
-				textField.setText("");
-				try {
-					File f=new File("test.txt");
-					FileWriter fw = new FileWriter("test.txt",true);
-					if(f.length()==0) {
-						fw.write(s);						
-					}else {
-						fw.write("\r\n"+s);
+				if(!s.trim().isEmpty()) {
+					RunTest r=new RunTest(list,model);
+					r.setHost(s);
+					textField.setText("");
+					try {
+						File f=new File("test.txt");
+						FileWriter fw = new FileWriter("test.txt",true);
+						if(f.length()==0) {
+							fw.write(s);						
+						}else {
+							fw.write("\r\n"+s);
+						}
+						fw.flush();
+						fw.close();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-					fw.flush();
-					fw.close();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
 				}
 			}
 		});
@@ -141,9 +143,12 @@ public class HostDemo  {
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String s=textField.getText();
-				RunTest r=new RunTest(list,model);
-				r.deleteHost(s);
-				textField.setText("");
+				if(!s.trim().isEmpty()) {
+					RunTest r=new RunTest(list,model);
+					r.deleteHost(s);
+					textField.setText("");
+				}
+				
 			}
 		});
 		btnDelete.setBounds(320, 14, 87, 23);
