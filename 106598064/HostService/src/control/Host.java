@@ -56,22 +56,28 @@ public class Host {
 	
 	public boolean check() 
 	{
-		try {
-			if(address.isReachable(100)) {
-				address = InetAddress.getByName(HostName);
-				HostName=address.getHostName();
-				IP=address.getHostAddress();
-				Status=true;
-			}else {
-				Status=false;
-			}
-			return Status;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
-		}
 		
+		Status=false;
+		try {
+			address = InetAddress.getByName(HostName);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		if(address!=null) {
+			try {
+				if(address.isReachable(100)) {				
+					HostName=address.getHostName();
+					IP=address.getHostAddress();
+					Status=true;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}			
+			
+		}
+		return Status;
 	}
 	
 	
