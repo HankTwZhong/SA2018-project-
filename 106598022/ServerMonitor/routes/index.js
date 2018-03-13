@@ -6,16 +6,19 @@ nmap.nmapLocation = "nmap";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var quickscan = new nmap.QuickScan('google.com');
+  var count = 0;
+  var quickscan = new nmap.QuickScan('127.0.0.1 google.com');
 
   quickscan.on('complete', function(data){
-    console.log(data[0].hostname);
+    console.log(data[0]);
+    count++;
+    if(count == 2)
+      res.render('index', { hostname: data[0]}); 
   });
 
   quickscan.on('error', function(error){
     console.log(error);
   });
-  res.render('index', { title: 'Express'}); 
 });
 
 module.exports = router;

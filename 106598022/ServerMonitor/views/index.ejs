@@ -5,8 +5,8 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>106598022 monitor<%= title %></p>
+    <h1><%= hostname.hostname %></h1>
+    <p>106598022 monitor</p>
     <table style="width:70%">
       <tr>
         <th>HostName</th>
@@ -20,6 +20,44 @@
       </tr>
     </table>
     <input type="text" style="width:20%;margin-left:5%;margin-top:10%" name = "hostname">
-    <input type="submit" style = "width:5%">
+    <input type="submit" style = "width:5%" id = "submit" value = "送出">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
+    <script>
+        $(document).ready(function(){
+            $("#submit").click(function(){
+                var hostArray = new Array();
+                $(".scoreInput").each(function(){
+                    scoreArray.push($(this).val());
+                })
+                $(".commentInput").each(function(){
+                    commentArray.push($(this).val());
+                })
+                $(".studentAssignmentId").each(function(){
+                    idArray.push($(this).val());
+                })
+                for (i=0; i<idArray.length; i++)
+                    objectArray[i] = {"_id": idArray[i], "score": scoreArray[i], "comment": commentArray[i]};
+                
+                jsonArray = JSON.stringify(objectArray);
+                $.ajax({
+                    method: "PATCH",
+                    url: "/pass/correctAssignment",
+                    data: {
+                        data:jsonArray
+                    }
+                }).done(function(data) {
+                    if(data == "success") {
+                        alert("批改儲存成功！！");
+                        document.location.href="/pass/assignment/<%= assignment._id %>";
+                    }
+                    else
+                        alert(data);
+                }).fail(function(data) {
+                    alert(data);
+                });
+            });
+        });
+    </script>
   </body>
 </html>
