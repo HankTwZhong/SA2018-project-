@@ -3,59 +3,43 @@
   <head>
     <title>SA-2018</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript">
+      setInterval( function(){window.location.reload()} , 10000 );
+    </script>
   </head>
   <body>
-    <h1><%= hostname.hostname %></h1>
-    <p>106598022 monitor</p>
+    <h1>106598022 monitor</h1>
     <table style="width:70%">
       <tr>
         <th>HostName</th>
         <th>IP Address / Name</th>
         <th>Status</th>
       </tr>
+      <% hosts.forEach(function(host){ %>
       <tr style="text-align:center">
-        <td></td>
-        <td>IP Address / Name</td>
-        <td>Status</td>
+        <td><%= host.hostname %></td>
+        <td><%= host.ip %></td>
+        <td><%= host.status %></td>
       </tr>
+      <% });%>
     </table>
-    <input type="text" style="width:20%;margin-left:5%;margin-top:10%" name = "hostname">
+    <input type="text" style="width:20%;margin-left:5%;margin-top:10%" id = "hostName">
     <input type="submit" style = "width:5%" id = "submit" value = "送出">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
     <script>
         $(document).ready(function(){
             $("#submit").click(function(){
-                var hostArray = new Array();
-                $(".scoreInput").each(function(){
-                    scoreArray.push($(this).val());
-                })
-                $(".commentInput").each(function(){
-                    commentArray.push($(this).val());
-                })
-                $(".studentAssignmentId").each(function(){
-                    idArray.push($(this).val());
-                })
-                for (i=0; i<idArray.length; i++)
-                    objectArray[i] = {"_id": idArray[i], "score": scoreArray[i], "comment": commentArray[i]};
-                
-                jsonArray = JSON.stringify(objectArray);
                 $.ajax({
-                    method: "PATCH",
-                    url: "/pass/correctAssignment",
+                    method: "POST",
+                    url: "/",
                     data: {
-                        data:jsonArray
+                        hostName:$("#hostName").val()
                     }
                 }).done(function(data) {
-                    if(data == "success") {
-                        alert("批改儲存成功！！");
-                        document.location.href="/pass/assignment/<%= assignment._id %>";
-                    }
-                    else
-                        alert(data);
-                }).fail(function(data) {
-                    alert(data);
-                });
+                  if(data == "success")
+                    document.location.href="/";
+                })
             });
         });
     </script>
