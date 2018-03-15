@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<!-- 相容IE最新的版本 -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- 響應式網頁的寬度和基本設定 -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>監控系統</title>
+<!-- Bootstrap css -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel='stylesheet' href='/stylesheets/style.css' />
+<style type="text/css">
+.table{
+  text-align: center;
+}
+.table td{
+  vertical-align: middle;
+}
+.badge{
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<!-- Popper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<!-- Bootstrap js -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- socket.io -->
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<div class="container-fluid">
+<header>
+</header>
+<article>
+<section>	
+    <h2>監控系統</h2>
+    <p><%= title %></p>
+    <table class="table table-bordered table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Host名稱</th>
+          <th scope="col">IP位址</th>
+          <th scope="col">狀態</th>
+          <th scope="col">操作</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+        <!-- 監控資料 -->
+      </tbody>
+    </table>
+</section>
+<section>
+  <form>
+    <div class="form-row align-items-center">
+      <div class="col-sm-6 my-1">
+        <label class="sr-only" for="input_data">input_data</label>
+        <div class="input-group">
+          <div class="input-group-prepend">
+            <div class="input-group-text">Host or IP</div>
+          </div>
+          <input type="text" class="form-control" id="input_data" placeholder="">
+        </div>
+      </div>
+      <div class="col-auto my-1">
+        <button type="button" class="btn btn-primary" onclick="add()">加入</button>
+      </div>
+    </div>
+  </form>
+</section>
+</article>
+<footer>
+</footer>
+</div>
+
+<script type="text/javascript">
+var socket;
+$(function(){
+  //初始化
+  socket = io.connect();
+  
+  //開始連線
+  console.log('開始連線');
+  socket.emit('start');
+
+  //取得監控清單
+  socket.on('scan_list', function(data){
+    console.log('取得監控清單');
+    console.log(data);
+
+    for (var key in data) {
+      $('#tbody').append('<tr><td colspan="2" class="td_list">'+data[key]+'</td><td><span class="badge badge-danger">Down</span></td><td><button type="button" onclick="del(\''+data[key]+'\',\''+data[key]+'\')">刪除</button></td></tr>');
+    }
+  });
+
+  //取得監控資料
+  socket.on('scan_data', function(data){
+    console.log('取得監控資料');
+    console.log(data);
+
+    $(".td_list").each(function(){
+      if($(this).text() == data[0].hostname || $(this).text() == data[0].ip){
+        $(this).parent().remove();
+      }
+    });
+
+    $('#tbody').append('<tr><td>'+data[0].hostname+'</td><td>'+data[0].ip+'</td><td><span class="badge badge-success">OK</span></td><td><button type="button" onclick="del(\''+data[0].hostname+'\',\''+data[0].ip+'\')">刪除</button></td></tr>');
+  });
+
+
+
+  //定時更新
+  window.setInterval(show, 20000);
+  function show() { 
+    window.location.reload();
+  } 
+});
+
+//新增
+function add(){
+  console.log($('#input_data').val());
+  socket.emit('add',$('#input_data').val());
+  window.location.reload();
+}
+
+//刪除
+function del(host,ip){
+  console.log(host+' & '+ip);
+  socket.emit('del',host,ip);
+  window.location.reload();
+}
+
+
+</script>
+
+</body>
+</html>
