@@ -42,25 +42,18 @@ public class RunTest extends java.util.TimerTask{
 			e.printStackTrace();
 		}	
 	}
+	
 	public void deleteHost(String s) {
-		int target=0;
-		boolean flag=false;
-		ArrayList<Host> temp=new ArrayList();
+
+		ArrayList<Host> temp=new ArrayList();		
 		for(int i=0;i<list.size();i++) {
-			if(list.get(i).getName().equals(s)||list.get(i).getIP().equals(s)) {
-				target=i;
-				flag=true;
-			}else {
-				temp.add(list.get(i));
+			if(!(list.get(i).getName().equals(s)||list.get(i).getIP().equals(s))) {
+				temp.add(list.get(i));			
 			}
 		}
 		
-		if(flag) {
-			list.remove(target);				
-		}
-		model.setRowCount(0);
-		run();
 		
+		list.clear();
 		
 		try {
 			FileWriter fw = new FileWriter("test.txt");
@@ -70,7 +63,7 @@ public class RunTest extends java.util.TimerTask{
 				}else {
 					fw.write(temp.get(i).getName()+"\r\n");
 				}
-				
+				list.add(temp.get(i));
 			}
 			fw.flush();
 			fw.close();
@@ -78,6 +71,9 @@ public class RunTest extends java.util.TimerTask{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		model.setRowCount(0);
+		run();
 		
 	}
 }
