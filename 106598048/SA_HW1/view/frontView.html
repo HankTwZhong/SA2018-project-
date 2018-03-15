@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <div class = "well jumbotron" id = title align = "center">
+      <h1>Web Host Monitor</h1>
+    </div>
+    <link rel="stylesheet" href="C:/Users/chenny/Desktop/SA2018-project-/106598048/SA_HW1/style/tableStyle.css">
+    <script src = "C:/Users/chenny/Desktop/SA2018-project-/106598048/SA_HW1/src/hostPing.js"></script>
+    <table id = monitorContentTable border = "1" align = "center">
+      <thead>
+        <tr>
+          <th>Host</th>
+          <th>IP Address</th>
+          <th>Status</th>
+          <th>Monitor Time</th>
+        </tr>
+        
+        <tr>
+          <td id = hostContent0 align = "center">
+            <input type = "text" id = url0>
+          </td>
+          <td id = ipContent0 align = "center"></td>
+          <td id = statusContent0 align = "center"></td>
+          <td id = monitorTime0 align = "center"></td>
+        </tr>
+      </thead>  
+    </table>
+    <p align = "center">
+      <button id = ok onclick="pingContent()">Monitor</button>  
+      <button id = addHostBtn onclick="addHost()">Add Host</button>  
+    </p>
+  </body>
+</html>
