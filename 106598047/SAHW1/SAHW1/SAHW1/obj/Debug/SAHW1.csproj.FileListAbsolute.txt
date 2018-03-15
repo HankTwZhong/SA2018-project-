@@ -1,0 +1,21 @@
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\bin\Debug\SAHW1.exe.config
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\bin\Debug\SAHW1.exe
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\bin\Debug\SAHW1.pdb
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.csprojResolveAssemblyReference.cache
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.Form1.resources
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.Properties.Resources.resources
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.csproj.GenerateResource.Cache
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.exe
+c:\users\user\documents\visual studio 2012\Projects\SAHW1\SAHW1\obj\Debug\SAHW1.pdb
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\bin\Debug\SAHW1.exe.config
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.exe
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.pdb
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\bin\Debug\SAHW1.exe
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\bin\Debug\SAHW1.pdb
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.csprojResolveAssemblyReference.cache
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.Form1.resources
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.Properties.Resources.resources
+C:\Users\MyLaptop\下載\SAHW1-winform-master\SAHW1\SAHW1\obj\Debug\SAHW1.csproj.GenerateResource.Cache
+C:\Users\MyLaptop\Desktop\SAHW1\SAHW1\bin\Debug\SAHW1.exe.config
+C:\Users\MyLaptop\Desktop\SAHW1\SAHW1\obj\Debug\SAHW1.exe
+C:\Users\MyLaptop\Desktop\SAHW1\SAHW1\obj\Debug\SAHW1.pdb
