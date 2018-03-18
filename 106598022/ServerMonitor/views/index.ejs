@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SA-2018</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript">
+      setInterval( function(){window.location.reload()} , 10000 );
+    </script>
+  </head>
+  <body>
+    <h1>106598022 monitor</h1>
+    <table style="width:70%">
+      <tr>
+        <th>HostName</th>
+        <th>IP Address / Name</th>
+        <th>Status</th>
+      </tr>
+      <% hosts.forEach(function(host){ %>
+      <tr style="text-align:center">
+        <td><%= host.hostname %></td>
+        <td><%= host.ip %></td>
+        <td><%= host.status %></td>
+      </tr>
+      <% });%>
+    </table>
+    <input type="text" style="width:20%;margin-left:5%;margin-top:10%" id = "hostName">
+    <input type="submit" style = "width:5%" id = "submit" value = "送出">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js" ></script>
+    <script>
+        $(document).ready(function(){
+            $("#submit").click(function(){
+                $.ajax({
+                    method: "POST",
+                    url: "/",
+                    data: {
+                        hostName:$("#hostName").val()
+                    }
+                }).done(function(data) {
+                  if(data == "success")
+                    document.location.href="/";
+                })
+            });
+        });
+    </script>
+  </body>
+</html>
