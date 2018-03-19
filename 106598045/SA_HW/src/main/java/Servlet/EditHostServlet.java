@@ -1,5 +1,6 @@
 package Servlet;
 
+import model.EditHost;
 import model.Host;
 
 import javax.servlet.ServletException;
@@ -15,6 +16,7 @@ import static model.EditHost.*;
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        EditHost editHost = new EditHost();
         String action = request.getParameter("action");
         String name = request.getParameter("name");
         String ip = request.getParameter("ip");
@@ -23,16 +25,11 @@ public class EditHostServlet extends HttpServlet {
             host.setHostIp(ip);
             host.setHostName(name);
             host.setLastCheck("null");
-            if(!existHost(host)) {
-                addHostList(host);
+            if(!editHost.existHost(host)) {
+                editHost.addHostList(host);
             }
         }else if(action.equals("delete")){
-            List<Host> list = getHostList();
-            clearHostList();
-            for(int i=0;i<list.size();i++){
-                if(list.get(i).getHostIp().equals(ip)) continue;
-                addHostList(list.get(i));
-            }
+            editHost.deleteHostList(ip);
         }
         String resultJSON = "{ \"result\" : true }";
         response.setContentType("application/json");
