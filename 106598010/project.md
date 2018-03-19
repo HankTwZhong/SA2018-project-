@@ -7,6 +7,15 @@
 
 ## source code
 
-[monitor-of-hosts](https://github.com/MOONYAN/monitor-of-hosts/tree/Demo)
+[MonitorService](https://github.com/MOONYAN/MonitorService)
+```
+npm install
+npm start
+```
 
-[MonitorService](https://github.com/MOONYAN/MonitorService/tree/Demo)
+[monitor-of-hosts](https://github.com/MOONYAN/monitor-of-hosts)
+
+```
+npm install
+ng serve --o
+```
