@@ -3,7 +3,6 @@ var express = require('express')
 var app = express()
 var ping = require('ping')
 var moment = require('moment')
-let hostList = []
 let oldHostList = []
 let count =  0
 let info = {}
@@ -27,14 +26,9 @@ app.listen(3000, function () {
 
 
 function pingHost(callback){
-  hostList = []
   if(host2.length === 0)
   oldHostList = []
-  getEachStatus(()=>{
-      if(oldHostList !== hostList)
-      oldHostList = hostList
-      if(callback) callback()
-    })
+  getEachStatus()
   function getEachStatus(callback){
     var count=0
       if(host2.length===0)
@@ -46,8 +40,17 @@ function pingHost(callback){
             info.ipAddress = host.ipAddress
             info.active =  active ? 'Up' :  'Down'
             info.date = moment().format('YYYY/MM/DD  HH:mm:ss')
-            hostList.push(info)
-            info ={}
+            for(var i = 0 ; i <oldHostList.length; i++)
+            {
+              if(oldHostList[i].hostName === host.hostName)
+                {
+                  oldHostList[i].active =  info.active
+                  oldHostList[i].date  = info.date
+                }
+            }
+            if(oldHostList.map(function(e) { return e.hostName}).indexOf(host.hostName) === -1)
+              oldHostList.push(info)
+            info={}
           })
           if(count== host2.length)
           if(callback) callback()
@@ -56,7 +59,7 @@ function pingHost(callback){
 }
 
 function intervalGetHostStatus(){
-  var frequency = 600000 
+  var frequency = 5000 
       setInterval(function() {
         pingHost()
       }, frequency)
