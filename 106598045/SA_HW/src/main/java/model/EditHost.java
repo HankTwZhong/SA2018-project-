@@ -1,5 +1,7 @@
 package model;
 
+import DB.MongoDB;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,8 @@ public class EditHost {
         }catch (IOException e){
             e.printStackTrace();
         }
+
+        MongoDB.addHost(host);
     }
 
     public void deleteHostList(String ip) {

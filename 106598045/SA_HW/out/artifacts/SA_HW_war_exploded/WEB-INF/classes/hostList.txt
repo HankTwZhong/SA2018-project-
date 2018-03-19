@@ -1,3 +1,6 @@
 zenmate.com,zenmate.com,null
 local,127.0.0.1,null
 youtube,youtube.com,null
+test,125.3.2.4,null
+facebook,facebook.com,null
+host,facebook.com.tw,null
