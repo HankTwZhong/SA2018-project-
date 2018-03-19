@@ -1,5 +1,3 @@
-var fs = require('fs');
-var path = require('path');
 var dns = require('dns');
 var ping = require('ping');
 var async = require('async');

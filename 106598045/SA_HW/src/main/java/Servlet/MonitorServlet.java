@@ -2,6 +2,7 @@ package Servlet;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import model.EditHost;
 import model.Host;
 import model.Monitor;
 
@@ -20,9 +21,8 @@ import static model.EditHost.*;
 @WebServlet(name = "/MonitorServlet",urlPatterns = {"/MonitorServlet"})
 public class MonitorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-        System.out.println(this.getClass().getClassLoader().getResource("").getPath());
         Gson gson = new Gson();
-        List<Host> list = getHostList();
+        List<Host> list = new EditHost().getHostList();
         Monitor m = new Monitor();
         for(int i=0;i<list.size();i++){
             String timeStamp = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -34,7 +34,6 @@ public class MonitorServlet extends HttpServlet {
             }
         }
         String resultJSON = "{ \"result\" : "+gson.toJson(list)+" }";
-        //System.out.println(resultJSON);
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         try {

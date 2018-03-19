@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditHost {
-    public static List<Host> getHostList(){
+
+    public List<Host> getHostList(){
         List<Host> list = new ArrayList<Host>();
         BufferedReader br;
+        String path = ""+EditHost.class.getClassLoader().getResource("");
+        String csvFile =path.substring(6)+"hostList.txt";
         try {
-            String csvFile = "C:\\Users\\user\\Desktop\\project\\SA_HW\\src\\hostList.txt";
             br = new BufferedReader(new FileReader(csvFile));
             String line = "";
             while ((line = br.readLine()) != null) {
@@ -29,8 +31,9 @@ public class EditHost {
         return list;
     }
 
-    public static void addHostList(Host host){
-        String csvFile = "C:\\Users\\user\\Desktop\\project\\SA_HW\\src\\hostList.txt";
+    public void addHostList(Host host){
+        String path = ""+EditHost.class.getClassLoader().getResource("");
+        String csvFile =path.substring(6)+"hostList.txt";
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(csvFile,true));
             StringBuilder sb = new StringBuilder();
@@ -49,8 +52,18 @@ public class EditHost {
         }
     }
 
-    public static void clearHostList() {
-        String csvFile = "C:\\Users\\user\\Desktop\\project\\SA_HW\\src\\hostList.txt";
+    public void deleteHostList(String ip) {
+        List<Host> list = getHostList();
+        clearHostList();
+        for(int i=0;i<list.size();i++){
+            if(list.get(i).getHostIp().equals(ip)) continue;
+            addHostList(list.get(i));
+        }
+    }
+
+    public void clearHostList() {
+        String path = ""+EditHost.class.getClassLoader().getResource("");
+        String csvFile =path.substring(6)+"hostList.txt";
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(csvFile));
             out.flush();
@@ -62,7 +75,7 @@ public class EditHost {
         }
     }
 
-    public static boolean existHost(Host host){
+    public boolean existHost(Host host){
         boolean res = false;
         List<Host> list = getHostList();
         for(int i=0;i<list.size();i++){

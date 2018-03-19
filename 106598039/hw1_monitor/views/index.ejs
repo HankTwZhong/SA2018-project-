@@ -13,8 +13,11 @@
         console.log("test");
 				$.post("/DelHostList", {
           name : $(this).attr("name")
+        }, function(data, success){
+          window.location.reload();
         });
-			});
+      });
+      setTimeout("location.reload();", 30000);
     </script>
   </head>
   <body>
