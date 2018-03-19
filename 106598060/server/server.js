@@ -31,8 +31,7 @@ function pingHost(callback){
   getEachStatus()
   function getEachStatus(callback){
     var count=0
-      if(host2.length===0)
-      callback()
+      if(host2.length===0);
         host2.forEach(function(host){
           count++
           ping.sys.probe(host.ipAddress, function(active){
@@ -59,14 +58,14 @@ function pingHost(callback){
 }
 
 function intervalGetHostStatus(){
-  var frequency = 5000 
+  var frequency = 500
       setInterval(function() {
         pingHost()
       }, frequency)
 }
 app.post('/addHost',function(req,res){
-  if(req.body.newHost === undefined)
-  res.send('just space')
+  if(req.body.newHost === undefined || req.body.ipAddress === undefined)
+  res.send('')
   else if(host2.map(function(e) { return e.hostName}).indexOf(req.body.newHost)> 0 )
    res.send('There has same host')
   else{
