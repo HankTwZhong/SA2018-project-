@@ -1,4 +1,5 @@
-import model from '../src/model'
+import FileOperater from '../src/FileOperater'
+let fileOperater = new  FileOperater
 var assert = require('assert');
 let hostList=[]
 describe('Save Data', function() {
@@ -16,8 +17,8 @@ describe('Save Data', function() {
         ]
     })
     it('test',function(){
-       model.saveData(hostList)
-       model.readData(function(data){
+       fileOperater.saveData(hostList)
+       fileOperater.readData(function(data){
           console.log(data)
        })
     })

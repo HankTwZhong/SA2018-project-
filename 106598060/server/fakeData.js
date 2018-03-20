@@ -1,10 +1,10 @@
-import module from './src/model'
-
+import FileOperater from './src/FileOperater'
+let fileOperater = new FileOperater
 
 let fakeHostList=[]
 let fakeObject={}
 function fakeData(callback){
-    var fakeDataCount = 50
+    var fakeDataCount = 7
     
     for(var i =  0 ; i < fakeDataCount ; i ++)
     {
@@ -22,7 +22,7 @@ function fakeData(callback){
 
 function startFakeData(){
     fakeData(function(){
-        module.saveData(fakeHostList)
+        fileOperater.saveData(fakeHostList)
     })
 }
 startFakeData()

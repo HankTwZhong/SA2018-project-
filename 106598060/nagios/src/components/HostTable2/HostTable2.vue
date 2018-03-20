@@ -4,7 +4,7 @@
       <div class="col-sm-3" style="padding-left:0px;">
         <label>頁面刷新速度{{intervalTime/1000}}秒</label>
         <div class="input-group">
-          <input class="form-control width100" v-model="intervalTime">
+          <input class="form-control width100" v-model="intervalTime" :disabled="disableInput">
           <span class="input-group-btn">
           <button class="btn btn-success" v-if="autofresh === '自動刷新'" @click="startInterval()">{{autofresh}}</button>
           <button :class="refreshBtnClass" v-else @click="stopInterval()">{{autofresh}}</button>
@@ -13,8 +13,8 @@
       </div>
       <form @submit.prevent="addHost()" method="post">
         <div class="col-sm-3" style="padding-left:0px;">
-          <label for="newHostName">HostName</label>
-          <input type="text" class="form-control" id="newHostName" v-model="newHostName">
+          <label for="hostName">HostName</label>
+          <input type="text" class="form-control" id="hostName" v-model="hostName">
         </div>
         <div class="col-sm-3" style="padding-left:0px;">
           <label for="ipAddress">IP or Domain Name</label>
@@ -46,7 +46,8 @@
     components: {},
     data() {
       return {
-        newHostName: undefined,
+        disableInput:false,
+        hostName: undefined,
         ipAddress: undefined,
         buttonDisable: false,
         btnDisableTime: 200,
@@ -111,6 +112,7 @@
     mounted() {},
     methods: {
       startInterval() {
+        this.disableInput = true
         let scope = this
         this.autofresh = '停止自動刷新'
         this.refreshBtnClass ='btn btn-danger'
@@ -119,6 +121,7 @@
         }, this.intervalTime)
       },
       stopInterval() {
+        this.disableInput =false
         this.autofresh = '自動刷新'
         this.refreshBtnClass ='btn btn-success'
         clearInterval(this.setIntervalId)
@@ -138,7 +141,7 @@
       addHost() {
         this.buttonDisable = true
         axios.post('http://localhost:3000/addHost', {
-            newHost: this.newHostName,
+            hostName: this.hostName,
             ipAddress: this.ipAddress
           })
           .then((res) => {
@@ -155,7 +158,7 @@
           })
       },
       initForm() {
-        this.newHostName = undefined
+        this.hostName = undefined
         this.ipAddress = undefined
       },
       refreshed() {

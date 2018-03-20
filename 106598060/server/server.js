@@ -1,146 +1,145 @@
-import model from './src/model'
+import FileOperater from './src/FileOperater'
+let fileOperater = new FileOperater
 var express = require('express')
 var app = express()
 var ping = require('ping')
 var moment = require('moment')
-let oldHostList = []
-let count =  0
-let info = {}
-let bodyPaser = require('body-parser')
-let host2 = []
-let setIntervalId
 const cors = require('cors')
+let bodyPaser = require('body-parser')
+let responseList = []
+let hostList = []
+let setIntervalId
 
 app.use(bodyPaser.urlencoded({extended:true}))
 app.use(bodyPaser.json())
 app.use(cors())
 app.options('*',cors())
+
+
 app.listen(3000, function () {
-  model.readData(function(data){
-    host2 = data
+  fileOperater.readData(function(data){
+    hostList = data
     pingHost()
+    setEachResponeHost(function(){
+      updateAllHostInterval()
+      console.log('All Host Data were added ')
+    })
   })
-  intervalGetHostStatus()
+  
+  
   console.log('Example app listening on port 3000!');
 })
 
-
-function pingHost(callback){
-  if(host2.length === 0)
-  oldHostList = []
-  getEachStatus(function(){ 
-    if(callback)callback()
-  })
-
-  function getEachStatus(callback){
-    var count=0
-      if(host2.length===0);
-        host2.forEach(function(host){
-          count++
-          ping.sys.probe(host.ipAddress, function(active){
-            info.hostName = host.hostName
-            info.ipAddress = host.ipAddress
-            info.active =  active ? 'Up' :  'Down'
-            info.date = moment().format('YYYY/MM/DD  HH:mm:ss')
-            var i = 0
-            for( i = 0 ; i <oldHostList.length; i++)
-            {
-              if(oldHostList[i].hostName === host.hostName)
-                {
-                  oldHostList[i].active =  info.active
-                  oldHostList[i].date  = info.date
-                }
-            }
-            if(oldHostList.map(function(e) { return e.hostName}).indexOf(host.hostName) === -1)
-              oldHostList.push(info)
-            info={}
-          })
-          if(count== host2.length )
-          {
-            while(!oldHostList.length === host2.length);
-            if(callback) callback()
-          }
+function setEachResponeHost(callback){
+  var count = 0
+  hostList.forEach(function(host){
+    count++
+    setResponseHost(host,function(hostInfo){
+      responseList.push(hostInfo)
     })
-  }
+  })
+  if(count === hostList.length)
+  callback()
 }
 
-function intervalGetHostStatus(){
+function pingHost(callback){
+        hostList.forEach(function(host){
+          setResponseHost(host,function(hostInfo){
+            for(var i = 0 ; i <responseList.length; i++)
+            {
+              if(responseList[i].hostName === host.hostName)
+                {
+                  responseList[i].active =  hostInfo.active
+                  responseList[i].date  = hostInfo.date
+                }
+            }
+          })
+    })
+}
+
+function updateAllHostInterval(){
   var frequency = 3000
     setIntervalId  = setInterval(function() {
         pingHost()
       }, frequency)
 }
+function setResponseHost(host,callback){
+  var hostInfo = {}
+  ping.sys.probe(host.ipAddress, function(active){
+    hostInfo.hostName = host.hostName
+    hostInfo.ipAddress = host.ipAddress
+    hostInfo.active =  active ? 'Up' :  'Down'
+    hostInfo.date = moment().format('YYYY/MM/DD  HH:mm:ss')
+    if(callback)callback(hostInfo)
+  })  
+}
+
 app.post('/addHost',function(req,res){
-  if(req.body.newHost === undefined || req.body.ipAddress === undefined)
+  if(req.body.hostName === undefined || req.body.ipAddress === undefined)
   res.send('')
-  else if(host2.map(function(e) { return e.hostName}).indexOf(req.body.newHost)> 0 )
+  else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)> 0 )
    res.send('There has same host')
   else{
-    host2.push(
+    hostList.push(
       {
-      hostName:req.body.newHost,
+      hostName : req.body.hostName,
       ipAddress : req.body.ipAddress
     })
-    model.saveData(host2)
-    ping.sys.probe(req.body.ipAddress, function(active){
-      info.hostName = req.body.newHost
-      info.ipAddress = req.body.ipAddress
-      info.active =  active ? 'Up' :  'Down'
-      info.date = moment().format('YYYY/MM/DD  HH:mm:ss')
-      oldHostList.push(info)
-      info ={}
-      res.send('Host: "'+ req.body.newHost+ '" was added success')
-    })  
+    fileOperater.saveData(hostList)
+    setResponseHost(req.body,function(hostInfo){
+      res.send('Host: "'+ req.body.hostName + '" was added success')
+      console.log(hostInfo)
+      responseList.push(hostInfo)
+    })
   }
 })
-
-
 app.post('/deleteHost',function(req,res){
   clearInterval(setIntervalId)
-  deleteHost(function(host2){
-    intervalGetHostStatus()
-      model.saveData(host2)
-        res.send('host'+ host2.hostName +'has been delete')
+  deleteHost(function(hostList){
+    updateAllHostInterval()
+        fileOperater.saveData(hostList)
+        res.send('host'+ hostList.hostName +'has been delete')
     })
   function deleteHost(callback){
-    host2 = host2.filter(function(hostData){
+    hostList = hostList.filter(function(hostData){
       return hostData.hostName !== req.body.hostName
     })
-    oldHostList = oldHostList.filter((hostData)=>{
+    responseList = responseList.filter((hostData)=>{
       return hostData.hostName !== req.body.hostName
     })
-    callback(host2)
+    callback(hostList)
   }
 })
 
 app.get('/todo', function (req, res) {
-  let page = req.query.page
-  let per_page = req.query.per_page
-  let current_page = 1
-  let last_page = 1
-  let prev_page_url = null
-  let domain = "http://localhost:3000/todo"
-  let vuetableFormat = {}
-  if(page){
-    current_page = page * 1
-  }
-    if(oldHostList.length % 10 === 0 && oldHostList.length !== 0){
-      last_page = oldHostList.length / 10
+    let page = req.query.page
+    let per_page = req.query.per_page
+    let current_page = 1
+    let last_page = 1
+    let prev_page_url = null
+    let domain = "http://localhost:3000/todo"
+    let vuetableFormat = {}
+    if(page){
+      current_page = page * 1
     }
-    else{
-        last_page = Math.round(oldHostList.length / 10) + 1
-    }                               
-    if(current_page > 1){
-        prev_page_url = domain + '&sort=&page=' + (current_page - 1) +'&per_page=' + per_page
-    }             
-    vuetableFormat.total = oldHostList.length
-    vuetableFormat.per_page = per_page
-    vuetableFormat.current_page = current_page
-    vuetableFormat.last_page = last_page
-    vuetableFormat.next_page_url = domain + '&sort=&page=' + (current_page + 1) +'&per_page=' + per_page
-    vuetableFormat.prev_page_url = prev_page_url
-    vuetableFormat.from = 1 + 10 * (current_page - 1)
-    vuetableFormat.to = 10 * current_page
-    vuetableFormat.data = oldHostList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
-    res.json(vuetableFormat)
+      if(responseList.length % 10 === 0 && responseList.length !== 0){
+        last_page = responseList.length / 10
+      }
+      else{
+          last_page = Math.round(responseList.length / 10) + 1
+      }                               
+      if(current_page > 1){
+          prev_page_url = domain + '&sort=&page=' + (current_page - 1) +'&per_page=' + per_page
+      }             
+      vuetableFormat.total = responseList.length
+      vuetableFormat.per_page = per_page
+      vuetableFormat.current_page = current_page
+      vuetableFormat.last_page = last_page
+      vuetableFormat.next_page_url = domain + '&sort=&page=' + (current_page + 1) +'&per_page=' + per_page
+      vuetableFormat.prev_page_url = prev_page_url
+      vuetableFormat.from = 1 + 10 * (current_page - 1)
+      vuetableFormat.to = 10 * current_page
+      vuetableFormat.data = responseList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
+      res.json(vuetableFormat)
+ 
 })
