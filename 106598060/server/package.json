@@ -6,7 +6,8 @@
   "scripts": {
     "babel-node": "babel-node --presets=latest",
     "start": "nodemon server.js --exec babel-node --presets es2015",
-    "test": "mocha --compilers js:babel-core/register"
+    "test": "mocha --compilers js:babel-core/register",
+    "fake": "nodemon fakeData.js --exec babel-node --presets es2015"
   },
   "author": "",
   "license": "ISC",
