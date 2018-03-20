@@ -8,7 +8,7 @@ let count =  0
 let info = {}
 let bodyPaser = require('body-parser')
 let host2 = []
-
+let setIntervalId
 const cors = require('cors')
 
 app.use(bodyPaser.urlencoded({extended:true}))
@@ -28,7 +28,10 @@ app.listen(3000, function () {
 function pingHost(callback){
   if(host2.length === 0)
   oldHostList = []
-  getEachStatus()
+  getEachStatus(function(){ 
+    if(callback)callback()
+  })
+
   function getEachStatus(callback){
     var count=0
       if(host2.length===0);
@@ -39,7 +42,8 @@ function pingHost(callback){
             info.ipAddress = host.ipAddress
             info.active =  active ? 'Up' :  'Down'
             info.date = moment().format('YYYY/MM/DD  HH:mm:ss')
-            for(var i = 0 ; i <oldHostList.length; i++)
+            var i = 0
+            for( i = 0 ; i <oldHostList.length; i++)
             {
               if(oldHostList[i].hostName === host.hostName)
                 {
@@ -51,15 +55,18 @@ function pingHost(callback){
               oldHostList.push(info)
             info={}
           })
-          if(count== host2.length)
-          if(callback) callback()
+          if(count== host2.length )
+          {
+            while(!oldHostList.length === host2.length);
+            if(callback) callback()
+          }
     })
   }
 }
 
 function intervalGetHostStatus(){
-  var frequency = 500
-      setInterval(function() {
+  var frequency = 3000
+    setIntervalId  = setInterval(function() {
         pingHost()
       }, frequency)
 }
@@ -89,9 +96,11 @@ app.post('/addHost',function(req,res){
 
 
 app.post('/deleteHost',function(req,res){
+  clearInterval(setIntervalId)
   deleteHost(function(host2){
-    model.saveData(host2)
-    res.send('host'+ host2.hostName +'has been delete')
+    intervalGetHostStatus()
+      model.saveData(host2)
+        res.send('host'+ host2.hostName +'has been delete')
     })
   function deleteHost(callback){
     host2 = host2.filter(function(hostData){
@@ -105,7 +114,6 @@ app.post('/deleteHost',function(req,res){
 })
 
 app.get('/todo', function (req, res) {
-  console.log(oldHostList)
   let page = req.query.page
   let per_page = req.query.per_page
   let current_page = 1
