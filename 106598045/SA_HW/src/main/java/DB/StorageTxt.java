@@ -1,20 +1,25 @@
-package model;
+package DB;
 
-import DB.MongoDB;
+import model.Host;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EditHost {
+public class StorageTxt implements StoragePort {
+    String path;
+    String csvFile;
 
-    public List<Host> getHostList(){
+    public StorageTxt(){
+        this.path = ""+ StorageTxt.class.getClassLoader().getResource("");
+        this.csvFile = this.path.substring(6)+"hostList.txt";
+    }
+
+    public List<Host> getHost(){
         List<Host> list = new ArrayList<Host>();
         BufferedReader br;
-        String path = ""+EditHost.class.getClassLoader().getResource("");
-        String csvFile =path.substring(6)+"hostList.txt";
         try {
-            br = new BufferedReader(new FileReader(csvFile));
+            br = new BufferedReader(new FileReader(this.csvFile));
             String line = "";
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
@@ -33,17 +38,12 @@ public class EditHost {
         return list;
     }
 
-    public void addHostList(Host host){
-        String path = ""+EditHost.class.getClassLoader().getResource("");
-        String csvFile =path.substring(6)+"hostList.txt";
+    public void addHost(Host host){
+        if(existHost(host)) return;
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(csvFile,true));
+            BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile,true));
             StringBuilder sb = new StringBuilder();
-            sb.append(host.getHostName());
-            sb.append(',');
-            sb.append(host.getHostIp());
-            sb.append(',');
-            sb.append(host.getLastCheck());
+            sb.append(host.getHostName()).append(',').append(host.getHostIp()).append(',').append(host.getLastCheck());
             sb.append('\n');
             out.write(sb.toString());
             out.close();
@@ -52,24 +52,20 @@ public class EditHost {
         }catch (IOException e){
             e.printStackTrace();
         }
-
-        MongoDB.addHost(host);
     }
 
-    public void deleteHostList(String ip) {
-        List<Host> list = getHostList();
+    public void deleteHost(String ip) {
+        List<Host> list = getHost();
         clearHostList();
         for(int i=0;i<list.size();i++){
             if(list.get(i).getHostIp().equals(ip)) continue;
-            addHostList(list.get(i));
+            addHost(list.get(i));
         }
     }
 
     public void clearHostList() {
-        String path = ""+EditHost.class.getClassLoader().getResource("");
-        String csvFile =path.substring(6)+"hostList.txt";
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(csvFile));
+            BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile));
             out.flush();
             out.close();
         }catch (FileNotFoundException e){
@@ -81,7 +77,7 @@ public class EditHost {
 
     public boolean existHost(Host host){
         boolean res = false;
-        List<Host> list = getHostList();
+        List<Host> list = getHost();
         for(int i=0;i<list.size();i++){
             if(list.get(i).getHostIp().equals(host.getHostIp())) res = true;
         }

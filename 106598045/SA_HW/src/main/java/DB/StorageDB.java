@@ -12,20 +12,21 @@ import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MongoDB {
-    public static MongoCollection<Document> getDB(){
-        MongoClient mongoClient = new MongoClient("127.0.0.1");
+public class StorageDB implements StoragePort {
+
+    public MongoCollection<Document> getDB(){
+        MongoClient mongoClient = new MongoClient("140.124.181.15");
         MongoDatabase database = mongoClient.getDatabase( "MonitorSystem" );
         MongoCollection<Document> collection = database.getCollection("host");
         return collection;
     }
-    public static void addHost(Host host){
+    public void addHost(Host host){
         MongoCollection<Document> collection = getDB();
         Document doc =new Document("hostName", host.getHostName())
                 .append("hostIp", host.getHostIp());
         collection.insertOne(doc);
     }
-    public static List<Host> getHost(){
+    public List<Host> getHost(){
         List<Host> hostList = new ArrayList<Host>();
         MongoCollection<Document> collection = getDB();
 
@@ -38,7 +39,7 @@ public class MongoDB {
         }
         return hostList;
     }
-    public static void deleteHost(String hostIp){
+    public void deleteHost(String hostIp){
         MongoCollection<Document> collection = getDB();
         Bson deleteHost = Filters.eq("hostIp", hostIp);
         collection.deleteOne(deleteHost);
