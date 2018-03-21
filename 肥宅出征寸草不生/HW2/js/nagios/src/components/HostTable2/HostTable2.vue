@@ -29,7 +29,7 @@
     </div>
     <br>
     <div class="row">
-      <vuetable ref="vuetable" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/todo" :fields="fields">
+      <vuetable ref="vuetable" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/getHostsData" :fields="fields">
         <template slot="actions" slot-scope="props">
                         <button class="btn btn-danger btn-sm " :disabled="buttonDisable" @click="deleteHost(props.rowData)">
                           <span class="glyphicon glyphicon-trash"></span>刪除主機</button>&nbsp;&nbsp;
@@ -170,11 +170,8 @@
             hostName: hostData.hostName
           })
           .then((res) => {
-            var scope = this
-            setTimeout(function() {
-              scope.buttonDisable = false
-              scope.refreshed()
-            }, scope.btnDisableTime)
+            this.refreshed()
+            this.buttonDisable = false
           })
       }
     }
