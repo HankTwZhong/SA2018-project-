@@ -4,6 +4,7 @@ import DB.StorageDB;
 import DB.StoragePort;
 import com.google.gson.Gson;
 import DB.StorageTxt;
+import config.StorageConf;
 import model.Host;
 import model.Monitor;
 
@@ -21,7 +22,8 @@ import java.util.List;
 public class MonitorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
         Gson gson = new Gson();
-        String storageMethod = "DB";
+        StorageConf storageConf = new StorageConf();
+        String storageMethod = storageConf.getStorageMethod();
         StoragePort storage = (storageMethod == "DB")?new StorageDB():new StorageTxt();
 
         List<Host> list = storage.getHost();
