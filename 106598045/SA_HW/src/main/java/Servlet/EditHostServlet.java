@@ -1,6 +1,8 @@
 package Servlet;
 
-import model.EditHost;
+import DB.StorageDB;
+import DB.StoragePort;
+import DB.StorageTxt;
 import model.Host;
 
 import javax.servlet.ServletException;
@@ -11,12 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static model.EditHost.*;
-
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EditHost editHost = new EditHost();
+        String storageMethod = "DB";
+        StoragePort storage = (storageMethod == "DB")?new StorageDB():new StorageTxt();
+
         String action = request.getParameter("action");
         String name = request.getParameter("name");
         String ip = request.getParameter("ip");
@@ -25,11 +27,9 @@ public class EditHostServlet extends HttpServlet {
             host.setHostIp(ip);
             host.setHostName(name);
             host.setLastCheck("null");
-            if(!editHost.existHost(host)) {
-                editHost.addHostList(host);
-            }
+            storage.addHost(host);
         }else if(action.equals("delete")){
-            editHost.deleteHostList(ip);
+            storage.deleteHost(ip);
         }
         String resultJSON = "{ \"result\" : true }";
         response.setContentType("application/json");
