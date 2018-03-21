@@ -40,7 +40,7 @@
                     "action":"create"
                 },
                 success: function (data) {
-                    getMonitor();
+                    getMonitor(false);
                 },
                 error: function () {
                     alert('add failure');
@@ -57,7 +57,7 @@
                     "action":"delete"
                 },
                 success: function (data) {
-                    getMonitor();
+                    getMonitor(false);
                 },
                 error: function () {
                     alert('delete failure');
@@ -65,7 +65,7 @@
             });
         }
 
-        function getMonitor() {
+        function getMonitor(isContinue) {
             $.ajax({
                 type: "POST",
                 url: "/MonitorServlet",
@@ -84,7 +84,8 @@
                         console.log(datalist[index]);
                     }
                     $('table').html(HTML);
-                    setTimeout(function(){ getMonitor(); }, 3000);
+                    console.log(isContinue);
+                    if(isContinue) setTimeout(function(){ getMonitor(true); }, 3000);
                 },
                 error: function () {
                     alert('monitor failure');
@@ -94,7 +95,7 @@
 
         window.onload = function(){
             document.getElementById("creatHost").onclick = function() {setNewHost()};
-            getMonitor();
+            getMonitor(true);
         };
 
     </script>

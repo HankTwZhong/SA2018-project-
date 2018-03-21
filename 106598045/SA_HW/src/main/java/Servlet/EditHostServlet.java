@@ -18,8 +18,8 @@ import java.io.IOException;
 public class EditHostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         StorageConf storageConf = new StorageConf();
-        String storageMethod = storageConf.getStorageMethod();
-        StoragePort storage = (storageMethod.equals("DB"))?new StorageDB():new StorageTxt();
+        String storageType = storageConf.getStorageType();
+        StoragePort storage = (storageType.equals("DB"))?new StorageDB():new StorageTxt();
 
         String action = request.getParameter("action");
         String name = request.getParameter("name");

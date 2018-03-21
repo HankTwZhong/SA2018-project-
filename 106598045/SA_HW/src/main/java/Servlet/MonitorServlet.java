@@ -23,9 +23,9 @@ public class MonitorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
         Gson gson = new Gson();
         StorageConf storageConf = new StorageConf();
-        String storageMethod = storageConf.getStorageMethod();
-        System.out.println(storageMethod);
-        StoragePort storage = (storageMethod.equals("DB"))?new StorageDB():new StorageTxt();
+        String storageType = storageConf.getStorageType();
+        System.out.println(storageType);
+        StoragePort storage = (storageType.equals("DB"))?new StorageDB():new StorageTxt();
 
         List<Host> list = storage.getHost();
         Monitor m = new Monitor();

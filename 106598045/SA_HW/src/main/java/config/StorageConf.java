@@ -4,9 +4,9 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class StorageConf {
-    private static String method = null;
-    public static String getStorageMethod(){
-        if (method == null) {
+    private static String type = null;
+    public static String getStorageType(){
+        if (type == null) {
             Properties properties = new Properties();
             String path = ""+ StorageConf.class.getClassLoader().getResource("");
             String configFile = path.substring(6)+"storageConf.properties";
@@ -16,8 +16,8 @@ public class StorageConf {
                 ex.printStackTrace();
                 return null;
             }
-            method = properties.getProperty("storageMethod");
+            type = properties.getProperty("storageMethod");
         }
-        return method;
+        return type;
     }
 }
