@@ -24,7 +24,8 @@ public class MonitorServlet extends HttpServlet {
         Gson gson = new Gson();
         StorageConf storageConf = new StorageConf();
         String storageMethod = storageConf.getStorageMethod();
-        StoragePort storage = (storageMethod == "DB")?new StorageDB():new StorageTxt();
+        System.out.println(storageMethod);
+        StoragePort storage = (storageMethod.equals("DB"))?new StorageDB():new StorageTxt();
 
         List<Host> list = storage.getHost();
         Monitor m = new Monitor();
