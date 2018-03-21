@@ -8,7 +8,7 @@
           <element id="module-output" name="SA_HW" />
         </element>
         <element id="directory" name="lib">
-          <element id="library" level="project" name="gson-2.6.2" />
+          <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
         </element>
       </element>
     </root>
