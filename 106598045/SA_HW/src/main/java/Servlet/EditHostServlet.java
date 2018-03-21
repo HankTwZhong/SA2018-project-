@@ -16,7 +16,7 @@ import java.util.List;
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String storageMethod = "TXT";
+        String storageMethod = "DB";
         StoragePort storage = (storageMethod == "DB")?new StorageDB():new StorageTxt();
 
         String action = request.getParameter("action");

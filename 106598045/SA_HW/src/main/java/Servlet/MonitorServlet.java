@@ -21,7 +21,7 @@ import java.util.List;
 public class MonitorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
         Gson gson = new Gson();
-        String storageMethod = "TXT";
+        String storageMethod = "DB";
         StoragePort storage = (storageMethod == "DB")?new StorageDB():new StorageTxt();
 
         List<Host> list = storage.getHost();
