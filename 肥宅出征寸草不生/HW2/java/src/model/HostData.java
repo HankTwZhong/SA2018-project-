@@ -1,13 +1,13 @@
 package model;
 
-public class Data {
+public class HostData {
 	
 	private String date;
 	private String hostName;
 	private String ipAddress;
 	private String active;
 	
-	public Data( String date, String hostName, String ipAddress, String active ) {
+	public HostData( String date, String hostName, String ipAddress, String active ) {
 		this.date = date;
 		this.hostName = hostName;
 		this.ipAddress = ipAddress;

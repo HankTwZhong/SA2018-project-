@@ -15,12 +15,12 @@ import java.util.TimerTask;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import model.Data;
+import model.HostData;
 import view.Panel;
 
-public class Host {
+public class DataOperator {
 
-	public static void showData() {
+	public static void sendDataToPanel() {
 
 		String[] headings = new String[] { "Host Name", "IP Address", "Status", "Date" };
 		// String[] urls = { "http://www.ntut.edu.tw/bin/home.php",
@@ -35,7 +35,7 @@ public class Host {
 
 			public void run() {
 				try {
-					ArrayList<Data> arrayListData = setJson();
+					ArrayList<HostData> arrayListData = parseJson();
 					data = new String[arrayListData.size()][headings.length];
 					for (int i = 0; i < arrayListData.size(); i++) {
 						data[i][0] = arrayListData.get(i).getHostName();
@@ -53,7 +53,7 @@ public class Host {
 	}
 
 	public static void main(String[] args) throws Exception {
-		showData();
+		sendDataToPanel();
 	}
 
 	private static String[] checkHost(String address) throws MalformedURLException, IOException {
@@ -70,8 +70,8 @@ public class Host {
 		return result;
 	}
 
-	public static String sendGet() throws IOException {
-		String url = "http://localhost:3000/todo";
+	public static String sendGetRequest() throws IOException {
+		String url = "http://localhost:3000/getHostsData";
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 		con.setRequestMethod("GET");
@@ -87,12 +87,12 @@ public class Host {
 		return response.toString();
 	}
 
-	private static ArrayList<Data> setJson() throws Exception {
+	private static ArrayList<HostData> parseJson() throws Exception {
 		JSONObject json;
-		ArrayList<Data> myData = new ArrayList<>();
+		ArrayList<HostData> myData = new ArrayList<>();
 		try {
 
-			json = new JSONObject(sendGet());
+			json = new JSONObject(sendGetRequest());
 			System.out.println(json.get("data"));
 
 			final JSONArray geodata = json.getJSONArray("data");
@@ -105,7 +105,7 @@ public class Host {
 				System.out.println(person.getString("ipAddress"));
 				System.out.println(person.getString("active"));
 
-				myData.add(new Data(person.getString("date"), person.getString("hostName"),
+				myData.add(new HostData(person.getString("date"), person.getString("hostName"),
 						person.getString("ipAddress"), person.getString("active")));
 			}
 
