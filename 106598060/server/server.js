@@ -58,7 +58,7 @@ function pingHost(callback){
 }
 
 function updateAllHostInterval(){
-  var frequency = 3000
+  var frequency = 200
     setIntervalId  = setInterval(function() {
         pingHost()
       }, frequency)
@@ -110,8 +110,7 @@ app.post('/deleteHost',function(req,res){
     callback(hostList)
   }
 })
-
-app.get('/todo', function (req, res) {
+app.get('/getHostsData', function (req, res) {
     let page = req.query.page
     let per_page = req.query.per_page
     let current_page = 1
