@@ -63,7 +63,7 @@ public class StorageTxt implements StoragePort {
         }
     }
 
-    public void clearHostList() {
+    private void clearHostList() {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile));
             out.flush();
@@ -75,7 +75,7 @@ public class StorageTxt implements StoragePort {
         }
     }
 
-    public boolean existHost(Host host){
+    private boolean existHost(Host host){
         boolean res = false;
         List<Host> list = getHost();
         for(int i=0;i<list.size();i++){
