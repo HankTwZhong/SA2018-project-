@@ -1,4 +1,4 @@
-package DB;
+package Repository;
 
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class StorageDB implements StoragePort {
+public class HostDB implements HostRepository {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> collection;

@@ -1,4 +1,4 @@
-package DB;
+package Repository;
 
 import model.Host;
 
@@ -6,12 +6,12 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StorageTxt implements StoragePort {
+public class HostTxt implements HostRepository {
     String path;
     String csvFile;
 
-    public StorageTxt(){
-        this.path = ""+ StorageTxt.class.getClassLoader().getResource("");
+    public HostTxt(){
+        this.path = ""+ HostTxt.class.getClassLoader().getResource("");
         this.csvFile = this.path.substring(6)+"hostList.txt";
     }
 

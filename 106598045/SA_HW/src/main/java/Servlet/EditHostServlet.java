@@ -1,9 +1,6 @@
 package Servlet;
 
-import DB.StorageDB;
-import DB.StoragePort;
-import DB.StorageTxt;
-import config.StorageConf;
+import Repository.HostRepository;
 import model.Host;
 
 import javax.servlet.ServletException;
@@ -16,11 +13,13 @@ import java.io.IOException;
 
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        StorageConf storageConf = new StorageConf();
-        String storageType = storageConf.getStorageType();
-        StoragePort storage = (storageType.equals("DB"))?new StorageDB():new StorageTxt();
+    private HostRepository hostRepository;
 
+    EditHostServlet() {
+        hostRepository = HostRepositoryBuilder.Build();
+    }
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String name = request.getParameter("name");
         String ip = request.getParameter("ip");
@@ -29,9 +28,9 @@ public class EditHostServlet extends HttpServlet {
             host.setHostIp(ip);
             host.setHostName(name);
             host.setLastCheck("null");
-            storage.addHost(host);
+            hostRepository.addHost(host);
         }else if(action.equals("delete")){
-            storage.deleteHost(ip);
+            hostRepository.deleteHost(ip);
         }
         String resultJSON = "{ \"result\" : true }";
         response.setContentType("application/json");

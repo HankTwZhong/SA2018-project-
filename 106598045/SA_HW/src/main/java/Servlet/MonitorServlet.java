@@ -1,9 +1,9 @@
 package Servlet;
 
-import DB.StorageDB;
-import DB.StoragePort;
+import Repository.HostDB;
+import Repository.HostRepository;
 import com.google.gson.Gson;
-import DB.StorageTxt;
+import Repository.HostTxt;
 import config.StorageConf;
 import model.Host;
 import model.Monitor;
@@ -20,14 +20,17 @@ import java.util.List;
 
 @WebServlet(name = "/MonitorServlet",urlPatterns = {"/MonitorServlet"})
 public class MonitorServlet extends HttpServlet {
+    private List<Host> list;
+    private HostRepository hostRepository;
+
+    MonitorServlet() {
+        hostRepository = HostRepositoryBuilder.Build();
+        list = hostRepository.getHost();
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
         Gson gson = new Gson();
-        StorageConf storageConf = new StorageConf();
-        String storageType = storageConf.getStorageType();
-        System.out.println(storageType);
-        StoragePort storage = (storageType.equals("DB"))?new StorageDB():new StorageTxt();
 
-        List<Host> list = storage.getHost();
         Monitor m = new Monitor();
         for(int i=0;i<list.size();i++){
             String timeStamp = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(Calendar.getInstance().getTime());
