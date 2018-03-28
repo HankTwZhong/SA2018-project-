@@ -1,10 +1,7 @@
 package Servlet;
 
-import Repository.HostDB;
 import Repository.HostRepository;
 import com.google.gson.Gson;
-import Repository.HostTxt;
-import config.StorageConf;
 import model.Host;
 import model.Monitor;
 
@@ -20,18 +17,12 @@ import java.util.List;
 
 @WebServlet(name = "/MonitorServlet",urlPatterns = {"/MonitorServlet"})
 public class MonitorServlet extends HttpServlet {
-    private List<Host> list;
-    private HostRepository hostRepository;
-
-    MonitorServlet() {
-        hostRepository = HostRepositoryBuilder.Build();
-        list = hostRepository.getHost();
-    }
+    private HostRepository hostRepository = HostRepositoryBuilder.Build();
+    private Gson gson = new Gson();
+    Monitor m = new Monitor();
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-        Gson gson = new Gson();
-
-        Monitor m = new Monitor();
+        List<Host> list = hostRepository.getHost();
         for(int i=0;i<list.size();i++){
             String timeStamp = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(Calendar.getInstance().getTime());
             list.get(i).setLastCheck(timeStamp);

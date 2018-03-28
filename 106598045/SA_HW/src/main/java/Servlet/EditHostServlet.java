@@ -13,16 +13,13 @@ import java.io.IOException;
 
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
-    private HostRepository hostRepository;
-
-    EditHostServlet() {
-        hostRepository = HostRepositoryBuilder.Build();
-    }
+    private HostRepository hostRepository = HostRepositoryBuilder.Build();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String name = request.getParameter("name");
         String ip = request.getParameter("ip");
+        System.out.println(action);
         if(action.equals("create")){
             Host host = new Host();
             host.setHostIp(ip);

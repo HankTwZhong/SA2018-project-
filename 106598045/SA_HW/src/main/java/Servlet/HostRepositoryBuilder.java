@@ -16,19 +16,17 @@ public class HostRepositoryBuilder {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        int storageType = Integer.parseInt(properties.getProperty("storageMethod"));
+        String storageType = properties.getProperty("storageMethod");
+        System.out.println(storageType);
 
-        HostRepository result;
-        switch(storageType) {
-            case 1:
-                result = new HostDB();
-                break;
-            case 2:
-                result = new HostTxt();
-                break;
-            default:
-                result = null;
+        if(storageType.equals("TXT")) {
+            return new HostTxt();
         }
-        return result;
+        else if(storageType.equals("DB")) {
+            return new HostDB();
+        }
+        else {
+            return null;
+        }
     }
 }
