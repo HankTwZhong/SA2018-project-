@@ -5,12 +5,12 @@ import App from './App'
 import router from './router'
 import 'bootstrap/dist/js/bootstrap.min.js'
 import 'bootstrap/dist/css/bootstrap.css'
-import HostTable2 from './components/HostTable2/HostTable2'
 import Vuetable from '../node_modules/vuetable-2/src/components/Vuetable'
 import VueTablePagination from '../node_modules/vuetable-2/src/components/VueTablePagination'
+import store from './store'
+
 
 Vue.config.productionTip = false
-Vue.use(HostTable2)
 Vue.component('vuetable', Vuetable)
 Vue.component('vuetable-pagination', VueTablePagination)
 /* eslint-disable no-new */
@@ -20,6 +20,7 @@ new Vue({
   router,
   components: { App },
   template: '<App/>',
+  store,
   comments: {
     VueTable: Vuetable,
     VueTablePagination: VueTablePagination

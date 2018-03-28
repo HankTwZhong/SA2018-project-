@@ -29,8 +29,10 @@
     </div>
     <br>
     <div class="row">
-      <vuetable ref="vuetable" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/getHostsData" :fields="fields">
+      <vuetable ref="vuetable" http-method="post" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/getHostsData" :fields="fields">
         <template slot="actions" slot-scope="props">
+                        <button class="btn btn-success btn-sm " :disabled="buttonDisable" @click="contact(props.rowData)">
+                          <span class="glyphicon glyphicon-user"></span>緊急聯絡人</button>&nbsp;&nbsp;
                         <button class="btn btn-danger btn-sm " :disabled="buttonDisable" @click="deleteHost(props.rowData)">
                           <span class="glyphicon glyphicon-trash"></span>刪除主機</button>&nbsp;&nbsp;
 </template>
@@ -41,7 +43,8 @@
 </template>
 
 <script>
-  const axios = require('axios')
+import {mapActions} from 'vuex'
+const axios = require('axios')
   export default {
     components: {},
     data() {
@@ -111,6 +114,13 @@
     },
     mounted() {},
     methods: {
+      contact(hostData){
+        console.log(hostData)
+        this.actionContact(hostData)
+        this.$router.push({
+          path: '/conTact'
+        })
+      },
       startInterval() {
         this.disableInput = true
         let scope = this
@@ -173,7 +183,8 @@
             this.refreshed()
             this.buttonDisable = false
           })
-      }
+      },
+      ...mapActions(['actionContact'])
     }
   }
 </script>

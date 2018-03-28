@@ -1,4 +1,4 @@
-import FileOperater from './src/FileOperater'
+import FileOperater from '../src/module/FileOperater'
 let fileOperater = new FileOperater
 
 let fakeHostList=[]
