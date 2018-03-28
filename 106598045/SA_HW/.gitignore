@@ -1,3 +1,5 @@
 .idea/
+out/
+target/
 SA_HW.iml
-/target
+/targe  t
