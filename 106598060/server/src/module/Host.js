@@ -30,7 +30,7 @@ export default class Host{
         })  
       }
     updateAllHostInterval(){
-        var frequency = 5000
+        var frequency = 2000
         var self = this
         var setIntervalId  = setInterval(function() {
             self.pingHost()
@@ -63,12 +63,15 @@ export default class Host{
         var count = 0
         var self = this
         this.hostL.forEach(function(host){
+        count++ 
           self.setResponseHost(host,function(hostInfo){
             self.responseL.push(hostInfo)
-                callback(self.responseL)
+
           })
+          if(count === self.hostL.length)
+            callback(self.responseL)
         })
-      
+
       }
     getAllHost(){
           return this.responseL
