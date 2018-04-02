@@ -1,6 +1,7 @@
 package Servlet;
 
 import Host.host;
+import socket.ConnectServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,60 +45,72 @@ public class MonitorSystem extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         response.setCharacterEncoding("UTF-8");
 
-        FileReader fr = new FileReader("D:/專案/MonitorSystem/input.txt");
-        BufferedReader br = new BufferedReader(fr);
-        ArrayList<host> hostArrayList = new ArrayList<host>();
-        while (br.ready()) {
-            String[] s = br.readLine().split("\\s+");
-            host host = new host(s[0], s[1], s[2]);
-            hostArrayList.add(host);
-        }
-        fr.close();
-
-        System.out.println(getDateTime());
-        for(int i=0 ; i<hostArrayList.size() ; i++){
-            try {
-                if(isAddressAvailable(hostArrayList.get(i).getIP())){
-                    hostArrayList.get(i).setStatus("Up");
-                    System.out.println(i+ " " + getDateTime());
-                }
-                else{
-                    hostArrayList.get(i).setStatus("Down");
-                    System.out.println(i+ " " + getDateTime());
-                }
-            }
-            catch (Exception e){
-                hostArrayList.get(i).setStatus("Down");
-                System.out.println(getDateTime());
-            }
-        }
-
-        session.setAttribute("hostarraylist", hostArrayList);
-        request.getRequestDispatcher("MonitorSystem.jsp").forward(request, response);
-    }
-
-    public boolean isAddressAvailable(String ip) {
+        String msg = "{\"action\":\"monitor\"}";
+        ConnectServer connectServer = new ConnectServer("127.0.0.1",5050);
+        connectServer.sendMsgToServer(msg);
+        String resultJSON = connectServer.getMsgByServer();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json");
         try {
-            InetAddress address = InetAddress.getByName(ip);
-            if (address.isReachable(1000)) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-            System.out.println(e.toString());
+            response.getWriter().write(resultJSON);
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println(e.toString());
         }
-        return false;
     }
-
-    public String getDateTime(){
-        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
-        Date date = new Date();
-        String strDate = sdFormat.format(date);
-        return strDate;
-    }
+//        FileReader fr = new FileReader("D:/專案/MonitorSystem/input.txt");
+//        BufferedReader br = new BufferedReader(fr);
+//        ArrayList<host> hostArrayList = new ArrayList<host>();
+//        while (br.ready()) {
+//            String[] s = br.readLine().split("\\s+");
+//            host host = new host(s[0], s[1], s[2]);
+//            hostArrayList.add(host);
+//        }
+//        fr.close();
+//
+//        System.out.println(getDateTime());
+//        for(int i=0 ; i<hostArrayList.size() ; i++){
+//            try {
+//                if(isAddressAvailable(hostArrayList.get(i).getIP())){
+//                    hostArrayList.get(i).setStatus("Up");
+//                    System.out.println(i+ " " + getDateTime());
+//                }
+//                else{
+//                    hostArrayList.get(i).setStatus("Down");
+//                    System.out.println(i+ " " + getDateTime());
+//                }
+//            }
+//            catch (Exception e){
+//                hostArrayList.get(i).setStatus("Down");
+//                System.out.println(getDateTime());
+//            }
+//        }
+//
+//        session.setAttribute("hostarraylist", hostArrayList);
+//        request.getRequestDispatcher("MonitorSystem.jsp").forward(request, response);
+//    }
+//
+//    public boolean isAddressAvailable(String ip) {
+//        try {
+//            InetAddress address = InetAddress.getByName(ip);
+//            if (address.isReachable(100)) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } catch (UnknownHostException e) {
+//            e.printStackTrace();
+//            System.out.println(e.toString());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            System.out.println(e.toString());
+//        }
+//        return false;
+//    }
+//
+//    public String getDateTime(){
+//        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
+//        Date date = new Date();
+//        String strDate = sdFormat.format(date);
+//        return strDate;
+//    }
 }

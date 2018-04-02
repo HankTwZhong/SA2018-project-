@@ -53,57 +53,12 @@
                     <th style="width: 4%">Delete</th>
                     </thead>
                     <tbody>
-                    <% response.setIntHeader("Refresh", 10); %>
-                    <%for (int i=0 ;i<hostArrayList.size() ; i++){ %>
-                    <tr>
-                        <td style="word-break: break-all"><%=hostArrayList.get(i).getHostName()%></td>
-                        <td style="word-break: break-all"><%=hostArrayList.get(i).getIP()%></td>
-                        <% if(hostArrayList.get(i).getStatus()=="Up"){%>
-                        <td style="word-break: break-all" bgcolor="#adff2f">Up</td>
-                        <% }else{ %>
-                        <td style="word-break: break-all" bgcolor="red">Down</td>
-                        <% deadHostArrayList.add(hostArrayList.get(i)); %>
-                        <% } %>
-                        <td style="word-break: break-all"><%=setDateFormat.format(Calendar.getInstance().getTime())%></td>
-                        <td style="word-break: break-all">
-                            <div align="center">
-                                <input type="button" class="btn btn-warning" onclick="if (confirm('Are you sure you want to delete?') == true)
-                                        {chk('<%=hostArrayList.get(i).getIP()%>')}" value="delete">
-                            </div>
-                        </td>
-                    </tr>
-                    <% } %>
-                    <tr>
-                        <td>
-                            <input type="text" name="hostname" class="form-control" id="hostname" required>
-                        </td>
-                        <td>
-                            <input type="text" name="ipaddress" class="form-control" id="ipaddress" required>
-                        </td>
-                        <td></td>
-                        <td></td>
-                        <td>
-                            <div align="center">
-                                <button type="submit" class="btn btn-success">add host</button>
-                            </div>
-                        </td>
-                    </tr>
                     </tbody>
                 </table>
             </form>
         </div>
     </div>
 </div>
-<% if(deadHostArrayList.size()>0){%>
-<%String hostList = deadHostArrayList.get(0).getIP();%>
-<%for(int i=1 ; i<deadHostArrayList.size() ; i++) {%>
-<%hostList = hostList + " and " + deadHostArrayList.get(i).getIP();%>
-<%}%>
-<%String result = hostList + " is dead";%>
-<script language="JavaScript">
-    window.alert("<%=result%>");
-</script>
-<%}%>
 
 <footer class="footer">
     <div class="container">
