@@ -17,9 +17,11 @@ describe('Save Data', function() {
         ]
     })
     it('test',function(){
-       fileOperater.saveData(hostList)
-       fileOperater.readData(function(data){
+      //  fileOperater.saveData(hostList)
+       fileOperater.readData('hostList',function(data){
+         console.log(JSON.stringify(data))
        })
+      // fileOperater.readData('hostList','utf8')
     })
   })
 })

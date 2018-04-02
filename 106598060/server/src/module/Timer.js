@@ -4,7 +4,7 @@ export default class Timer{
     }
     pingInterval(host){
        let setIntervalId =  setInterval(function() {
-            host.pingHost()
+            host.checkHostStatus()
         }, this.frequency)
         return setIntervalId
     }

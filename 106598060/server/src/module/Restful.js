@@ -1,4 +1,4 @@
-import Host from './Host'
+import HostManager from './HostManager'
 import FacebookObserver from './Observer/FacebookObserver';
 import LineObserver from './Observer/LineObserver';
 import EmailObserver from './Observer/EmailObserver';
@@ -23,7 +23,7 @@ export default class Restful{
 startServer(){
   app.listen(3000, function () {
     var self = this
-    hostManage = new Host()
+    hostManage = new HostManager()
     hostManage.startMonitorHost(function(){
       hostManage.setEachResponeHost(function(res){
         setIntervalId=hostManage.updateAllHostInterval()

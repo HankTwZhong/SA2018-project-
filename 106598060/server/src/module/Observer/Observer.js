@@ -6,3 +6,6 @@ export default class Observer{
         throw new Error('You have to implement the method notify!');
     }
 }
+class time{
+   
+}
