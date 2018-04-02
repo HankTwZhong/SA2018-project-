@@ -1,6 +1,6 @@
-import FileOperater from '../src/FileOperater'
+import FileOperater from '../src/module/FileOperater'
 let fileOperater = new  FileOperater
-var assert = require('assert');
+let assert = require('assert');
 let hostList=[]
 describe('Save Data', function() {
   describe('prepare an array ', function() {
@@ -17,10 +17,11 @@ describe('Save Data', function() {
         ]
     })
     it('test',function(){
-       fileOperater.saveData(hostList)
-       fileOperater.readData(function(data){
-          console.log(data)
+      //  fileOperater.saveData(hostList)
+       fileOperater.readData('hostList',function(data){
+         console.log(JSON.stringify(data))
        })
+      // fileOperater.readData('hostList','utf8')
     })
   })
 })
