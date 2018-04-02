@@ -1,4 +1,4 @@
-import Restful from './Restful'
+import Restful from './module/Restful'
 
 let restful = new Restful
 

@@ -1,5 +1,10 @@
-import Host from './module/Host'
-import Contact from './module/Contact'
+import Host from './Host'
+import FacebookObserver from './Observer/FacebookObserver';
+import LineObserver from './Observer/LineObserver';
+import EmailObserver from './Observer/EmailObserver';
+import SkypeObserver from './Observer/SkypeObserver';
+import TelephoneObserver from './Observer/TelephoneObserver';
+
 
 let hostManage
 var express = require('express')
@@ -110,10 +115,12 @@ getContact(){
             contactList[i].skypeAddress =  contactList[i].communicate[j].address
           if(contactList[i].communicate[j].type==='LineID')
             contactList[i].lineIDAddress =  contactList[i].communicate[j].address
+          if(j===contactList[i].communicate.length - 1)
+            contactList[i].communicate =[]
         }
-      
+      }
     }
-    }
+    contactList
     let page = req.query.page
     let per_page = req.query.per_page
     let current_page = 1
@@ -144,17 +151,44 @@ getContact(){
       vuetableFormat.from = 1 + 10 * (current_page - 1)
       vuetableFormat.to = 10 * current_page
       vuetableFormat.data =contactList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
-      console.log(vuetableFormat.data)
+      console.log(contactList)
       res.json(vuetableFormat)
-    
   })
 }
 addContact(){
     app.post('/addContact',function(req,res){
-    let contact = new Contact
-    contact.addContact(req,hostManage,function(){
-      res.send('add success')
-    })
+      hostManage.addContact(req,function(){
+        for(let i =0 ; i < req.body.communicate.length ; i++){
+          if(req.body.communicate[i].type === 'Facebook')
+          {
+            const facebookObserver = new FacebookObserver()
+            hostManage.attach(req.body.hostName,facebookObserver)
+          }
+          if(req.body.communicate[i].type === 'Telephone')
+          {
+            let telephoneObserver = new TelephoneObserver()
+            hostManage.attach(req.body.hostName,telephoneObserver)
+          }
+          if(req.body.communicate[i].type === 'Email')
+          {
+            let emailObserver = new EmailObserver()
+            hostManage.attach(req.body.hostName,emailObserver)
+          }
+          if(req.body.communicate[i].type === 'Skype')
+          {
+            let skypeObserver = new SkypeObserver()
+            hostManage.attach(req.body.hostName,skypeObserver)
+          }
+          if(req.body.communicate[i].type === 'LineID')
+          {
+            let lineObserver = new LineObserver()
+            hostManage.attach(req.body.hostName,lineObserver)
+          }
+          if(i=== req.body.communicate.length-1)
+            res.send('add success')
+        }
+        // hostManage.attach(req.body.hostName)
+      })
     }
   )
 }

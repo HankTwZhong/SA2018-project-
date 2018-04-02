@@ -1,5 +1,8 @@
 import FileOperater from './FileOperater'
-import Contact from './Contact'
+import ContactData from './ContactData'
+import HostData from './HostData'
+import Timer from './Timer'
+import Observer from './Observer/Observer';
 
 var ping = require('ping')
 var moment = require('moment')
@@ -30,11 +33,9 @@ export default class Host{
         })  
       }
     updateAllHostInterval(){
-        var frequency = 2000
-        var self = this
-        var setIntervalId  = setInterval(function() {
-            self.pingHost()
-        }, frequency)
+        const frequency = 5000
+        let timer = new Timer(frequency)
+        let setIntervalId  =  timer.pingInterval(this)
         return setIntervalId
     }
     pingHost(callback){
@@ -47,10 +48,10 @@ export default class Host{
                 {
                     var s = self
                     if(self.responseL[i].active !==  hostInfo.active)
-                    {
-                        var contact = new Contact()
-                        contact.emergencyContact(s.responseL[i].contact)
-                    }
+                      {
+                           self.notifyAll(self.hostL[i])
+                      }
+                    // console.log(self.hostL[i])
                     self.responseL[i].active =  hostInfo.active
                     self.responseL[i].date  = hostInfo.date
                 }
@@ -63,15 +64,12 @@ export default class Host{
         var count = 0
         var self = this
         this.hostL.forEach(function(host){
-        count++ 
           self.setResponseHost(host,function(hostInfo){
             self.responseL.push(hostInfo)
-
+                callback(self.responseL)
           })
-          if(count === self.hostL.length)
-            callback(self.responseL)
         })
-
+      
       }
     getAllHost(){
           return this.responseL
@@ -98,16 +96,53 @@ export default class Host{
     }
     addHost(req,callback){
         var self =this
-        this.hostL.push(
-            {
-            hostName : req.body.hostName,
-            ipAddress : req.body.ipAddress,
-            contact:[]
-          })
+        let host = new HostData(req.body.hostName , req.body.ipAddress)
+        host.contact = []
+        this.hostL.push(host)
           this.fileOperater.saveData(this.hostL)
           this.setResponseHost(req.body,function(hostInfo){   
             self.responseL.push(hostInfo)
             callback()
           })
+    }
+    attach(hostName,observer = new Observer){
+        var self = this
+        for(var i = 0 ;i <this.hostL.length ; i++){
+            if(self.hostL[i].hostName === hostName)
+            {
+              if(self.hostL[i].observerList === undefined)    
+                    self.hostL[i].observerList = [observer]
+              else if(self.hostL[i].observerList.map(function(e) { return e.name}).indexOf(observer.name) === -1 )
+                    self.hostL[i].observerList.push(observer)
+              self.responseL[i].observerList = self.hostL[i].observerList
+              console.log(self.responseL[i].observerList[0])
+            }
+            if(i === self.hostL.length-1)
+                self.fileOperater.saveData(self.hostL)
+        }
+    }
+    notifyAll(host){
+        host.observerList.forEach((observer)=>{
+            console.log(observer.name)
+        })
+    }
+    addContact(req,callback){
+        var self = this
+        let contact  = new ContactData(req.body.contactName,req.body.communicate,req.body.hostName)
+        for(var i = 0 ;i <this.hostL.length ; i++){
+            if(self.hostL[i].hostName === req.body.hostName)
+            {
+              if(self.hostL[i].contact === undefined)    
+              self.hostL[i].contact = [contact]
+              else{
+                    self.hostL[i].contact.push(contact)
+                    self.responseL[i].contact = self.hostL[i].contact
+                }
+            }
+            if(i === self.hostL.length-1){
+                self.fileOperater.saveData(self.hostL)
+                callback()
+            }
+        }
     }
 }
