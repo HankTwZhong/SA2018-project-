@@ -1,5 +1,6 @@
 import FacebookObserver from '../src/module/Observer/FacebookObserver'
 import EmailObserver from '../src/module/Observer/EmailObserver'
+import Host from '../src/module/Host'
 
 
 let facebookObserver
@@ -9,12 +10,12 @@ describe('The subjectObserver should correctly use it own method by override roo
       it('should return -1 when the value is not present', function() {
             facebookObserver = new FacebookObserver
             let facebookObserver2  = new FacebookObserver
-            facebookObserver.contact = []
-            console.log(facebookObserver)
       })
       it('should',function(){
         emailObserver = new EmailObserver
-        console.log(emailObserver.notify())
+        Host.attach('johnson',facebookObserver)
+        Host.attach('yamin',facebookObserver)
+        // Host.attach('johnson',facebookObserver)
       })
     })
   })

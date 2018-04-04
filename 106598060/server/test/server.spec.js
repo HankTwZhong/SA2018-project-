@@ -1,10 +1,10 @@
-import FileOperater from '../src/module/FileOperater'
-let fileOperater = new  FileOperater
+import FileOperator from '../src/module/FileOperator'
+let fileOperator = new  FileOperator
 let assert = require('assert');
 let hostList=[]
 describe('Save Data', function() {
   describe('prepare an array ', function() {
-    it('should return -1 when the value is not present', function() {
+    it('prepare data', function() {
        hostList = [
          {
            hostName:'Johnsons Host',
@@ -16,12 +16,12 @@ describe('Save Data', function() {
           }
         ]
     })
-    it('test',function(){
-      //  fileOperater.saveData(hostList)
-       fileOperater.readData('hostList',function(data){
+    it('read and write data should same',function(){
+      fileOperator.saveData('hostList',hostList)
+      fileOperator.readData('hostList',function(data){
          console.log(JSON.stringify(data))
        })
-      // fileOperater.readData('hostList','utf8')
+      // fileOperator.readData('hostList','utf8')
     })
   })
 })

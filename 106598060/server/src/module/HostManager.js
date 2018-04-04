@@ -1,4 +1,4 @@
-import FileOperater from './FileOperater'
+import FileOperator from './FileOperator'
 import Contact from './Contact'
 import Host from './Host'
 import Timer from './Timer'
@@ -10,11 +10,11 @@ export default class HostManager{
     constructor(){
         this.hostL = []
         this.responseL = []
-        this.fileOperater = new FileOperater
+        this.fileOperator = new FileOperator
     }
     startMonitorHost(callback){
         var self = this
-        this.fileOperater.readData(function(data){
+        this.fileOperator.readData('hostList',function(data){
             self.hostL  = data
             callback(self.hostL)
         })
@@ -45,37 +45,16 @@ export default class HostManager{
         let setIntervalId  =  timer.pingInterval(this)
         return setIntervalId
     }
-    checkHostStatus(callback){
-        var self = this
-        this.hostL.forEach(function(host){
-            self.pingHost(host,function(hostInfo){
-            for(var i = 0 ; i <self.responseL.length; i++)
-            {
-              if(self.responseL[i].hostName === host.hostName)
-                {
-                    var s = self
-                    if(self.responseL[i].active !==  hostInfo.active)
-                       { 
-                        //    let host = new Host(self.responseL[i].hostName,self.responseL[i].ipAddress)
-                        //    host.notifyAll(self.hostL[i].observerList)
-                           self.notifyAll(self.hostL[i])
-                       }
-                    self.responseL[i].active =  hostInfo.active
-                    self.responseL[i].date  = hostInfo.date
-                }
-            }
-          })
-        })
-        return this.responseL
-    }
     setEachResponeHost(callback){
-        var count = 0
-        var self = this
+        let count = 0
+        let self = this
         this.hostL.forEach(function(host){
+          count++
           self.pingHost(host,function(hostInfo){
             self.responseL.push(hostInfo)
-                callback(self.responseL)
           })
+          if(count === self.hostL.length)
+            callback(self.responseL)
         })
       
     }
@@ -86,14 +65,29 @@ export default class HostManager{
             return this.hostL
     }
     deleteHost(req,callback){
-        var self = this
+        let self = this
+        this.fileOperator.readData('observerList',((data)=>{
+            let allObserverList = data
+            allObserverList = allObserverList.filter((eachList)=>{
+                return eachList.hostName !==  req.body.hostName
+            })
+            this.fileOperator.saveData('observerList',allObserverList)
+        }))
+        this.fileOperator.readData('contactList',((data)=>{
+            let allContactList = data
+            allContactList = allContactList.filter((eachList)=>{
+                return eachList.hostName !==  req.body.hostName
+            })
+            this.fileOperator.saveData('contactList',allContactList)
+        }))
         this.hostL = this.hostL.filter(function(hostData){
             return hostData.hostName !== req.body.hostName
         })
         this.responseL = this.responseL.filter((hostData)=>{
             return hostData.hostName !== req.body.hostName
         })
-        this.fileOperater.saveData(this.hostL)
+    
+        this.fileOperator.saveData('hostList',this.hostL)
         callback(this.hostL)
     }
     setHostList(hostList){
@@ -108,56 +102,10 @@ export default class HostManager{
         let host = new Host(req.body.hostName , req.body.ipAddress)
         host.contact = []
         this.hostL.push(host)
-          this.fileOperater.saveData(this.hostL)
+          this.fileOperator.saveData('hostList',this.hostL)
           this.pingHost(req.body,function(hostInfo){   
             self.responseL.push(hostInfo)
             callback()
           })
-    }
-    attach(hostName,observer = new Observer){
-        var self = this
-        for(var i = 0 ;i <this.hostL.length ; i++){
-            if(self.hostL[i].hostName === hostName)
-            {
-              if(self.hostL[i].observerList === undefined)    
-                    self.hostL[i].observerList = [observer]
-              else if(self.hostL[i].observerList.map(function(e) { return e.name}).indexOf(observer.name) === -1 )
-                    self.hostL[i].observerList.push(observer)
-              self.responseL[i].observerList = self.hostL[i].observerList
-              console.log(self.responseL[i].observerList[0])
-            }
-            if(i === self.hostL.length-1)
-                self.fileOperater.saveData(self.hostL)
-        }
-    }
-    notifyAll(host){
-        if(host.observerList === undefined)
-            console.log('no contact!!')
-        else{
-            host.observerList.forEach((observer)=>{
-                if(observer.name ==='facebookObserber'){
-                    let fb =  new FacebookObserver
-                    fb.notify()
-                }
-            })
-        }
-    }
-    addContact(req,callback){
-        var self = this
-        let contact  = new Contact(req.body.contactName,req.body.communicate,req.body.hostName)
-        for(var i = 0 ;i <this.hostL.length ; i++){
-            if(self.hostL[i].hostName === req.body.hostName)
-            {
-              if(self.hostL[i].contact === undefined)    
-                self.hostL[i].contact = [contact]
-              else
-                self.hostL[i].contact.push(contact)    
-              self.responseL[i].contact = self.hostL[i].contact
-            }
-            if(i === self.hostL.length-1){
-                self.fileOperater.saveData(self.hostL)
-                callback()
-            }
-        }
     }
 }

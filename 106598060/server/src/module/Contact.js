@@ -1,10 +1,6 @@
 export default class Contact{
-    constructor(contactName,communicate,hostName){
+    constructor(contactName,communicate){
         this.contactName = contactName
         this.communicate = communicate
-        this.hostName = hostName
-    }
-    emergencyContact(emergencyContact){
-        console.log('emergecy'+JSON.stringify(emergencyContact))
     }
 }

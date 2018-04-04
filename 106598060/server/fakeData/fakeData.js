@@ -1,5 +1,5 @@
-import FileOperater from '../src/module/FileOperater'
-let fileOperater = new FileOperater
+import FileOperator from '../src/module/FileOperator'
+let fileOperator = new FileOperator
 
 let fakeHostList=[]
 let fakeObject={}
@@ -22,7 +22,7 @@ function fakeData(callback){
 
 function startFakeData(){
     fakeData(function(){
-        fileOperater.saveData(fakeHostList)
+        fileOperator.saveData('hostList',fakeHostList)
     })
 }
 startFakeData()
