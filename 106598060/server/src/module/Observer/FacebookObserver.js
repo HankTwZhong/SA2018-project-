@@ -5,9 +5,6 @@ export default class FacebookObserver extends Observer{
     constructor(){
         super()
         this.name = 'facebookObserver'
-        this.notify = function(){
-            return 'this is facebook notify'
-        }
     }
     name(){
         return this.name

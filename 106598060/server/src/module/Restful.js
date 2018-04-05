@@ -156,36 +156,45 @@ getContact(){
 }
 addContact(){
     app.post('/addContact',function(req,res){
+     let hostList = hostManage.getHostList()
+     let findList = hostList.filter((host)=>{
+       return host.hostName  === req.body.hostName
+     })
+     let host =  new Host(findList.hostName,findList.ipAddress)
       Host.addContact(req,function(){
         for(let i =0 ; i < req.body.communicate.length ; i++){
           if(req.body.communicate[i].type === 'Facebook')
           {
             const facebookObserver = new FacebookObserver()
-            Host.attach(req.body.hostName,facebookObserver)
+            host.attach(req.body.hostName,facebookObserver)
           }
           if(req.body.communicate[i].type === 'Telephone')
           {
             let telephoneObserver = new TelephoneObserver()
-            Host.attach(req.body.hostName,telephoneObserver)
+            host.attach(req.body.hostName,telephoneObserver)
           }
           if(req.body.communicate[i].type === 'Email')
           {
             let emailObserver = new EmailObserver()
-            Host.attach(req.body.hostName,emailObserver)
+            host.attach(req.body.hostName,emailObserver)
           }
           if(req.body.communicate[i].type === 'Skype')
           {
             let skypeObserver = new SkypeObserver()
-            Host.attach(req.body.hostName,skypeObserver)
+            host.attach(req.body.hostName,skypeObserver)
           }
           if(req.body.communicate[i].type === 'LineID')
           {
             let lineObserver = new LineObserver()
-            Host.attach(req.body.hostName,lineObserver)
+            host.attach(req.body.hostName,lineObserver)
           }
           if(i=== req.body.communicate.length-1)
-            res.send('add success')
+            {
+              host.observerToTxt()
+              res.send('add success')
+          }
         }
+      
         // hostManage.attach(req.body.hostName)
       })
     }

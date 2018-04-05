@@ -1,5 +1,4 @@
 import FileOperator from './FileOperator'
-import Contact from './Contact'
 import Host from './Host'
 import Timer from './Timer'
 import Observer from './Observer/Observer';

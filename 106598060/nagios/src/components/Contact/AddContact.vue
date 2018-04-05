@@ -16,7 +16,7 @@
             <div class="pull-left">
               <label for="contactName">選擇通知方式</label>
               <select v-model="selected">
-                <option>Facebook</option>
+                <option selected>Facebook</option>
                 <option>Telephone</option>
                 <option>Email</option>
                 <option>Skype</option>
@@ -65,7 +65,6 @@ const axios= require('axios')
           })
           .then((res) => {
             console.log(res)
-            this.$refs.vuetable.refresh()
             this.contactData =[]
             this.contactName =[]
             this.newId = 1

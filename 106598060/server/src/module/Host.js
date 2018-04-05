@@ -2,49 +2,44 @@ import FileOperator from './FileOperator'
 import Contact from './Contact'
 export default class Host{
     constructor(hostName,ipAddress){
+        this.fileoperator  =  new FileOperator
+        let self = this
+        this.fileoperator.readData('observerList',function(data){
+            self.allObserverList = data
+        })     
+        this.observerList = undefined
         this.hostName  =  hostName
         this.ipAddress = ipAddress
-        this.contact = undefined
-        this.observerList =  undefined
-    }
-    getHostName(){
-        return this.hostName
-    }
-    getIPAddress(){
-        return this.ipAddress
+        this.contact = undefined 
     }
     getObserverList(){
         return this.observerList
     }
-    static attach(hostName,observer = new Observer){
+    attach(hostName,observer = new Observer){
+        this.observerList =  this.allObserverList.filter((eachList)=>{
+            return eachList.hostName === hostName
+        })
         let fileoperator = new FileOperator
         let self = this
-        fileoperator.readData('observerList',function(data){
-            let allObserverList = data
-            let foundList = allObserverList.filter((eachList)=>{
-                return eachList.hostName === hostName
-            })
-            if(foundList.length === 0){
-                let info = {
-                    hostName:hostName,
-                    observerList : [observer]
-                }              
-                allObserverList.push(info)
-                fileoperator.saveData('observerList',allObserverList)
-            }
-            else{
-                for(let i = 0 ; i < allObserverList.length ;i++){
-                    if(allObserverList[i].hostName === hostName){
-                        console.log(allObserverList[i].observerList.map(function(e) { return e.name}))
-                        if(allObserverList[i].observerList.map(function(e) { return e.name}).indexOf(observer.name) === -1)
-                            allObserverList[i].observerList.push(observer)
-                    }
-                    if(i === allObserverList.length -1)
-                        fileoperator.saveData('observerList',allObserverList)
+        if(this.observerList.length === 0){
+            let info = {
+                hostName:hostName,
+                observerList : [observer]
+            }              
+            self.allObserverList.push(info)
+        }
+        else{
+            for(let i = 0 ; i < self.allObserverList.length ;i++){
+                if(self.allObserverList[i].hostName === hostName){
+                    if(self.allObserverList[i].observerList.map(function(e) { return e.name}).indexOf(observer.name) === -1)
+                        self.allObserverList[i].observerList.push(observer)
                 }
             }
-        })
+        }
         
+    }
+    observerToTxt(){
+        this.fileoperator.saveData('observerList',this.allObserverList)
     }
     static notifyAll(hostName){
         let fileoperator = new FileOperator
@@ -59,9 +54,6 @@ export default class Host{
             })
         }))
     }
-    // static removeAttach(observer){
-
-    // }
     static addContact(req,callback){
         let fileoperator = new FileOperator
         let contact  = new Contact(req.body.contactName,req.body.communicate)
@@ -83,7 +75,7 @@ export default class Host{
             else{
                 for(let i = 0 ; i < allContactList.length ;i++){
                     if(allContactList[i].hostName === req.body.hostName){
-                        if(allContactList[i].contactList.map(function(e) { return e.contactName}).indexOf(req.body.contactName) === -1)
+                        // if(allContactList[i].contactList.map(function(e) { return e.contactName}).indexOf(req.body.contactName) === -1)
                             allContactList[i].contactList.push(contact)
                     }
                     if(i === allContactList.length -1){
@@ -102,7 +94,6 @@ export default class Host{
             let findContactList = allContactList.filter((eachList)=>{
                 return eachList.hostName === hostName
             })
-            console.log(findContactList)
             callback(findContactList)
         })
 

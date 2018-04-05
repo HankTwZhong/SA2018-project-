@@ -67,14 +67,10 @@ export default {
       }
     }
   },
-  mounted () {
-      console.log(this.contactUrl)
-    console.log(this.hostIP)
-  },
   props: ['hostIP', 'contactUrl','hostName'],
   methods: {
       refresh(){
-          this.$refs.vuetable.refresh()
+        this.$refs.vuetable.refresh()
       },
     onPaginationData (paginationData) {
       this.$refs.pagination.setPaginationData(paginationData)
