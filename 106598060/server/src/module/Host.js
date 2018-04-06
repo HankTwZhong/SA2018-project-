@@ -41,18 +41,18 @@ export default class Host{
     observerToTxt(){
         this.fileoperator.saveData('observerList',this.allObserverList)
     }
-    static notifyAll(hostName){
-        let fileoperator = new FileOperator
+    notifyAll(){
         let self = this
-        fileoperator.readData('observerList', ((data)=>{
-            let allObserverList = data
-            let notifyHost = allObserverList.filter((eachList)=>{
-                return eachList.hostName === hostName
+        this.fileoperator.readData('observerList',function(data){
+            self.allObserverList = data
+            let notifyHost = self.allObserverList.filter((eachList)=>{
+                return eachList.hostName === self.hostName
             })
             notifyHost[0].observerList.forEach((observer)=>{
                 console.log(observer.name)
             })
-        }))
+        })  
+     
     }
     static addContact(req,callback){
         let fileoperator = new FileOperator

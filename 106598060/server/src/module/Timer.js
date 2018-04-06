@@ -21,7 +21,10 @@ export default class Timer{
               if(responseList[i].hostName === hostInfo.hostName)
                 {
                     if(responseList[i].active !==  hostInfo.active)
-                        Host.notifyAll(responseList[i].hostName)
+                    {
+                        let host = new Host(responseList[i].hostName,responseList[i].ipAddress)
+                        host.notifyAll()
+                    }
                     responseList[i].active =  hostInfo.active
                     responseList[i].date  = hostInfo.date
                 }
