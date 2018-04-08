@@ -37,7 +37,7 @@ addHost(){
   app.post('/addHost',function(req,res){
     var hostList = hostManage.getHostList()
     // var responseList = hostManage.getAllHost()
-    if(req.body.hostName === undefined || req.body.ipAddress === undefined)
+    if(req.body.hostName === undefined || req.body.ipAddress === undefined || req.body.selected === undefined)
     res.send('')
     else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)> 0 )
     res.send('There has same host')

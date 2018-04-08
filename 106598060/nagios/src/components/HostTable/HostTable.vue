@@ -20,9 +20,16 @@
           <label for="ipAddress">IP or Domain Name</label>
           <input id="ipAddress" class="form-control" v-model="ipAddress">
         </div>
+        <div class="col-sm-3" style="padding-left:0px;">
+          <label for="selected">Monitor Mode</label></br>
+          <select id="selected" v-model="selected">
+                <option selected>Ping</option>
+                <option>isReachable</option>             
+              </select>
+        </div>
         <label>&nbsp;</label>
-        <span class="col-xs-3" style="padding-right:0px;">
-            <button type="submit" class="btn btn-success pull-left"  :disabled="buttonDisable">增加Host&nbsp;</button>
+        <span class="col-xs-12" style="padding-right:0px;">
+            <button type="submit" class="btn btn-success pull-right"  :disabled="buttonDisable">增加Host&nbsp;</button>
             <button class="btn btn-info pull-right" type="button" @click="refreshed()" :disabled="buttonDisable">重新整理</button>
           </span>
       </form>
@@ -52,6 +59,7 @@ const axios = require('axios')
         disableInput:false,
         hostName: undefined,
         ipAddress: undefined,
+        selected: undefined,
         buttonDisable: false,
         btnDisableTime: 200,
         setIntervalId: undefined,
@@ -108,7 +116,12 @@ const axios = require('axios')
             titleClass: 'center aligned',
             dataClass: 'center aligned'
           },
-          '__slot:actions'
+          {
+            name: 'selected',
+            title: '監控模式',
+            titleClass: 'center aligned',
+            dataClass: 'center aligned'
+          },'__slot:actions'
         ],
       }
     },
@@ -152,7 +165,8 @@ const axios = require('axios')
         this.buttonDisable = true
         axios.post('http://localhost:3000/addHost', {
             hostName: this.hostName,
-            ipAddress: this.ipAddress
+            ipAddress: this.ipAddress,
+            selected: this.selected
           })
           .then((res) => {
             console.log(res)
@@ -170,6 +184,7 @@ const axios = require('axios')
       initForm() {
         this.hostName = undefined
         this.ipAddress = undefined
+        this.selected = undefined
       },
       refreshed() {
         this.$refs.vuetable.refresh()

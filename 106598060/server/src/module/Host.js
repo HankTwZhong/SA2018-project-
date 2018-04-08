@@ -1,7 +1,7 @@
 import FileOperator from './FileOperator'
 import Contact from './Contact'
 export default class Host{
-    constructor(hostName,ipAddress){
+    constructor(hostName,ipAddress,selected){
         this.fileoperator  =  new FileOperator
         let self = this
         this.fileoperator.readData('observerList',function(data){
@@ -10,6 +10,7 @@ export default class Host{
         this.observerList = undefined
         this.hostName  =  hostName
         this.ipAddress = ipAddress
+        this.selected = selected
         this.contact = undefined 
     }
     getObserverList(){

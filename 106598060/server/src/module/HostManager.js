@@ -1,9 +1,10 @@
 import FileOperator from './FileOperator'
 import Host from './Host'
 import Timer from './Timer'
-import Observer from './Observer/Observer';
+import Observer from './Observer/Observer'
+import PingCommand from './Command/PingCommand'
+import IsReachableCommand from './Command/IsReachableCommand';
 
-var ping = require('ping')
 var moment = require('moment')
 export default class HostManager{
     constructor(){
@@ -20,12 +21,20 @@ export default class HostManager{
 
     }
     pingHost(host,callback){
-        let self = this
-        ping.sys.probe(host.ipAddress, function(active){
-            self.setResponseData(host,active,function(hostInfo){
-            if(callback)callback(hostInfo)
-            }) 
-        })
+        if (host.selected == 'Ping'){
+            let pingCommand = new PingCommand()
+            pingCommand.monitor(host, this, callback)
+        }
+        else if (host.selected == 'isReachable'){
+            let isReachableCommand = new IsReachableCommand()
+            isReachableCommand.monitor(host, this, callback)
+        }
+        // let self = this
+        // ping.sys.probe(host.ipAddress, function(active){
+        //     self.setResponseData(host,active,function(hostInfo){
+        //     if(callback)callback(hostInfo)
+        //     }) 
+        // })
       }
     setResponseData(host,active,callback){
         let hostInfo = {}
@@ -34,6 +43,7 @@ export default class HostManager{
         hostInfo.ipAddress = host.ipAddress
         hostInfo.active =  active ? 'Up' :  'Down'
         hostInfo.date = moment().format('YYYY/MM/DD  HH:mm:ss')
+        hostInfo.selected = host.selected
         hostInfo.contact=host.contact
         callback(hostInfo)
     }
@@ -98,7 +108,7 @@ export default class HostManager{
 
     addHost(req,callback){
         var self =this
-        let host = new Host(req.body.hostName , req.body.ipAddress)
+        let host = new Host(req.body.hostName, req.body.ipAddress, req.body.selected)
         host.contact = []
         this.hostL.push(host)
           this.fileOperator.saveData('hostList',this.hostL)

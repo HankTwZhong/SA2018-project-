@@ -10,6 +10,7 @@ function fakeData(callback){
     {
         fakeObject.hostName = 'host' +i 
         fakeObject.ipAddress =  '140.124.181.'+ i
+        fakeObject.selected = 'Ping'
         fakeHostList.push(fakeObject)
         fakeObject={}
         if(i=== fakeDataCount -1)
