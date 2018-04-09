@@ -6,57 +6,65 @@
         <div class="input-group">
           <input class="form-control width100" v-model="intervalTime" :disabled="disableInput">
           <span class="input-group-btn">
-          <button class="btn btn-success" v-if="autofresh === '自動刷新'" @click="startInterval()">{{autofresh}}</button>
-          <button :class="refreshBtnClass" v-else @click="stopInterval()">{{autofresh}}</button>
-          </span>
+            <button class="btn btn-success" v-if="autofresh === '自動刷新'" @click="startInterval()">{{autofresh}}</button>
+            <button :class="refreshBtnClass" v-else @click="stopInterval()">{{autofresh}}</button>
+            </span>
         </div>
       </div>
       <form @submit.prevent="addHost()" method="post">
-        <div class="col-sm-3" style="padding-left:0px;">
+        <div class="col-sm-2" style="padding-left:0px;">
           <label for="hostName">HostName</label>
           <input type="text" class="form-control" id="hostName" v-model="hostName">
         </div>
-        <div class="col-sm-3" style="padding-left:0px;">
+        <div class="col-sm-2" style="padding-left:0px;">
           <label for="ipAddress">IP or Domain Name</label>
           <input id="ipAddress" class="form-control" v-model="ipAddress">
         </div>
-        <div class="col-sm-3" style="padding-left:0px;">
-          <label for="selected">Monitor Mode</label></br>
-          <select id="selected" v-model="selected">
-                <option selected>Ping</option>
-                <option>isReachable</option>             
-              </select>
+        <div class="col-xs-2" style="padding-left:0px;">
+          <label for="selected">Monitor Mode</label>
+          <select id="selected" class="form-control" v-model="selected">
+                  <option selected>Ping</option>
+                  <option>isReachable</option>             
+          </select>
+        
         </div>
         <label>&nbsp;</label>
-        <span class="col-xs-12" style="padding-right:0px;">
-            <button type="submit" class="btn btn-success pull-right"  :disabled="buttonDisable">增加Host&nbsp;</button>
-            <button class="btn btn-info pull-right" type="button" @click="refreshed()" :disabled="buttonDisable">重新整理</button>
-          </span>
+        <br>
+        <div class="col-xs- " style="padding-left:0px;">
+          <button type="submit" class="btn btn-success pull-right"  :disabled="buttonDisable">增加Host&nbsp;</button>
+          <button class="btn btn-info pull-right" type="button" @click="refreshed()" :disabled="buttonDisable">重新整理</button>          
+        </div>
       </form>
     </div>
     <br>
     <div class="row">
-      <vuetable ref="vuetable" http-method="post" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/getHostsData" :fields="fields">
+      <vuetable ref="vuetable" http-method="post" pagination-path="" :css="css.table" :sort-order="sortOrder" @vuetable:pagination-data="onPaginationData" @vuetable:loading="onLoading" @vuetable:loaded="onLoaded" api-url="http://localhost:3000/getHostsData"
+        :fields="fields">
         <template slot="actions" slot-scope="props">
-                        <button class="btn btn-success btn-sm " :disabled="buttonDisable" @click="contact(props.rowData)">
-                          <span class="glyphicon glyphicon-user"></span>緊急聯絡人</button>&nbsp;&nbsp;
-                        <button class="btn btn-danger btn-sm " :disabled="buttonDisable" @click="deleteHost(props.rowData)">
-                          <span class="glyphicon glyphicon-trash"></span>刪除主機</button>&nbsp;&nbsp;
-</template>
+                          <button class="btn btn-success btn-sm " :disabled="buttonDisable" @click="contact(props.rowData)">
+                            <span class="glyphicon glyphicon-user"></span>緊急聯絡人</button>&nbsp;&nbsp;
+                          <button class="btn btn-danger btn-sm " :disabled="buttonDisable" @click="deleteHost(props.rowData)">
+                            <span class="glyphicon glyphicon-trash"></span>刪除主機</button>&nbsp;&nbsp;
+        </template>
       </vuetable>
       <vuetable-pagination ref="pagination" :css="css.pagination" @vuetable-pagination:change-page="onChangePage"></vuetable-pagination>
+    </div>
+    <br>
+    <div class ="row">
     </div>
   </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
-const axios = require('axios')
+  import {
+    mapActions
+  } from 'vuex'
+  const axios = require('axios')
   export default {
     components: {},
     data() {
       return {
-        disableInput:false,
+        disableInput: false,
         hostName: undefined,
         ipAddress: undefined,
         selected: undefined,
@@ -64,8 +72,8 @@ const axios = require('axios')
         btnDisableTime: 200,
         setIntervalId: undefined,
         intervalTime: 5000,
-        autofresh:'自動刷新',
-        refreshBtnClass:'btn btn-success',
+        autofresh: '自動刷新',
+        refreshBtnClass: 'btn btn-success',
         css: {
           table: {
             tableClass: 'ui blue selectable celled stackable attached table',
@@ -121,13 +129,13 @@ const axios = require('axios')
             title: '監控模式',
             titleClass: 'center aligned',
             dataClass: 'center aligned'
-          },'__slot:actions'
+          }, '__slot:actions'
         ],
       }
     },
     mounted() {},
     methods: {
-      contact(hostData){
+      contact(hostData) {
         console.log(hostData)
         this.actionContact(hostData)
         this.$router.push({
@@ -138,15 +146,15 @@ const axios = require('axios')
         this.disableInput = true
         let scope = this
         this.autofresh = '停止自動刷新'
-        this.refreshBtnClass ='btn btn-danger'
+        this.refreshBtnClass = 'btn btn-danger'
         this.setIntervalId = setInterval(function() {
-            scope.refreshed()
+          scope.refreshed()
         }, this.intervalTime)
       },
       stopInterval() {
-        this.disableInput =false
+        this.disableInput = false
         this.autofresh = '自動刷新'
-        this.refreshBtnClass ='btn btn-success'
+        this.refreshBtnClass = 'btn btn-success'
         clearInterval(this.setIntervalId)
       },
       onPaginationData(paginationData) {

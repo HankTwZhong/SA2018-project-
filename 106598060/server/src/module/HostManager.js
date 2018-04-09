@@ -16,7 +16,7 @@ export default class HostManager{
         var self = this
         this.fileOperator.readData('hostList',function(data){
             self.hostL  = data
-            callback(self.hostL)
+            callback()
         })
 
     }

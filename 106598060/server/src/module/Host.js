@@ -49,9 +49,13 @@ export default class Host{
             let notifyHost = self.allObserverList.filter((eachList)=>{
                 return eachList.hostName === self.hostName
             })
-            notifyHost[0].observerList.forEach((observer)=>{
-                console.log(observer.name)
-            })
+            if(notifyHost.length === 0)
+                console.log(self.hostName + ' does not have any observer')
+            else{
+                notifyHost[0].observerList.forEach((observer)=>{
+                    console.log(observer.name)
+                })
+            }
         })  
      
     }
