@@ -9,14 +9,14 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
-import Repository.StorageRepository;
+import Repository.StorageInterface;
 import config.StorageConfig;
 import model.Host;
 import Command.GetHostStatusCommand;
 
 public class MonitoringHost {
 	private ScheduledExecutorService scheduler;
-	private StorageRepository hostRepository = StorageConfig.Build();
+	private StorageInterface hostRepository = StorageConfig.Build();
 	private ArrayList<Host> hostList = hostRepository.getHost();
 	
 	public MonitoringHost() {

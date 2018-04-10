@@ -8,10 +8,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Repository.StorageRepository;
+import Repository.StorageInterface;
 import model.Host;
 
-public class StorageTxt implements StorageRepository {
+public class StorageTxt implements StorageInterface {
     String path;
     String csvFile;
 
@@ -28,6 +28,7 @@ public class StorageTxt implements StorageRepository {
             String line = "";
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(",");
+                System.out.println("row[2]=" + row[2]);
                 Host host = new Host();
                 host.setHostName(row[0]);
                 host.setHostIp(row[1]);
@@ -49,7 +50,7 @@ public class StorageTxt implements StorageRepository {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile,true));
             StringBuilder sb = new StringBuilder();
-            sb.append(host.getHostName()).append(',').append(host.getHostIp()).append(',').append(host.getLastCheck());
+            sb.append(host.getHostName()).append(',').append(host.getHostIp()).append(',').append(host.getCheckMethod()).append(",null");
             sb.append('\n');
             out.write(sb.toString());
             out.close();

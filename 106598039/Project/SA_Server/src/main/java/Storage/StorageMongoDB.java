@@ -1,6 +1,6 @@
 package Storage;
 
-import Repository.StorageRepository;
+import Repository.StorageInterface;
 import model.Host;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
 
-public class StorageMongoDB implements StorageRepository {
+public class StorageMongoDB implements StorageInterface {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> collection;

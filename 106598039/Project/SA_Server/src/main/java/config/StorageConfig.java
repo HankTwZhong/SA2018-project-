@@ -3,12 +3,12 @@ package config;
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import Repository.StorageRepository;
+import Repository.StorageInterface;
 import Storage.StorageMongoDB;
 import Storage.StorageTxt;
 
 public class StorageConfig {
-    public static StorageRepository Build() {
+    public static StorageInterface Build() {
         Properties properties = new Properties();
         String path = ""+ StorageConfig.class.getClassLoader().getResource("");
         String configFile = path.substring(6) + "storageConf.properties";
