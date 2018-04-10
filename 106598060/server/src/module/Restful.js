@@ -169,22 +169,22 @@ addContact(){
           }
           if(req.body.communicate[i].type === 'Telephone')
           {
-            let telephoneObserver = new TelephoneObserver()
+            const telephoneObserver = new TelephoneObserver()
             host.attach(req.body.hostName,telephoneObserver)
           }
           if(req.body.communicate[i].type === 'Email')
           {
-            let emailObserver = new EmailObserver()
+            const emailObserver = new EmailObserver()
             host.attach(req.body.hostName,emailObserver)
           }
           if(req.body.communicate[i].type === 'Skype')
           {
-            let skypeObserver = new SkypeObserver()
+            const skypeObserver = new SkypeObserver()
             host.attach(req.body.hostName,skypeObserver)
           }
           if(req.body.communicate[i].type === 'LineID')
           {
-            let lineObserver = new LineObserver()
+            const lineObserver = new LineObserver()
             host.attach(req.body.hostName,lineObserver)
           }
           if(i=== req.body.communicate.length-1)
@@ -193,8 +193,6 @@ addContact(){
               res.send('add success')
           }
         }
-      
-        // hostManage.attach(req.body.hostName)
       })
     }
   )

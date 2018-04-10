@@ -19,17 +19,6 @@ export default class HostManager{
         })
     }
 
-    // setResponseData(host,active,callback){
-    //     let hostInfo = {}
-    //     hostInfo.contact = []
-    //     hostInfo.hostName = host.hostName
-    //     hostInfo.ipAddress = host.ipAddress
-    //     hostInfo.active =  active ? 'Up' :  'Down'
-    //     hostInfo.date = moment().format('YYYY/MM/DD  HH:mm:ss')
-    //     hostInfo.selected = host.selected
-    //     hostInfo.contact=host.contact
-    //     callback(hostInfo)
-    // }
     updateAllHostInterval(){
         const frequency = 5000
         console.log('only once')
