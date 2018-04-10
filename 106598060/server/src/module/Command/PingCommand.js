@@ -7,11 +7,9 @@ export default class PingCommand extends Command{
         this.name = "Ping"
     }
 
-    monitor(host, hostManager, callback){
-        ping.sys.probe(host.ipAddress, function(active){
-            hostManager.setResponseData(host, active, function(hostInfo){
-                if(callback)callback(hostInfo)
-                }) 
+    monitor(ipAddress, callback){
+        ping.sys.probe(ipAddress, function(active){
+            callback(active)
         })
     }
 }

@@ -52,6 +52,7 @@ export default class Host{
             if(notifyHost.length === 0)
                 console.log(self.hostName + ' does not have any observer')
             else{
+                console.log(notifyHost[0].hostName)
                 notifyHost[0].observerList.forEach((observer)=>{
                     console.log(observer.name)
                 })

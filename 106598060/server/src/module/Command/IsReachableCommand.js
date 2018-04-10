@@ -7,13 +7,11 @@ export default class IsReachableCommand extends Command{
         this.name = "isReachable"
     }
 
-    monitor(host, hostManager, callback){
+    monitor(ipAddress, callback){
         isAllReachable([
-            host.ipAddress
+            ipAddress
           ], (err, reachable) => {
-            hostManager.setResponseData(host, reachable, function(hostInfo){
-                if(callback)callback(hostInfo)
-                }) 
+            callback(reachable)
           });
     }
 }
