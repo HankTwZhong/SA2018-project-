@@ -1,12 +1,13 @@
 import TxtOperator from './FileOperator/TxtOperator'
 import Contact from './Contact'
 export default class Host{
-    constructor(hostName,ipAddress,selected){
+    constructor(hostName,ipAddress,selected,callback){
         this.fileoperator  =  new TxtOperator
         let self = this
         this.fileoperator.readData('observerList',function(data){
             self.allObserverList = data
-        })     
+            if(callback)callback()
+        })    
         this.observerList = undefined
         this.hostName  =  hostName
         this.ipAddress = ipAddress
@@ -45,6 +46,7 @@ export default class Host{
     notifyAll(){
         let self = this
         this.fileoperator.readData('observerList',function(data){
+            console.log(data)
             self.allObserverList = data
             let notifyHost = self.allObserverList.filter((eachList)=>{
                 return eachList.hostName === self.hostName
@@ -85,7 +87,6 @@ export default class Host{
                             allContactList[i].contactList.push(contact)
                     }
                     if(i === allContactList.length -1){
-
                         fileoperator.saveData('contactList',allContactList)
                         callback()
                     }

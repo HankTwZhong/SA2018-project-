@@ -159,7 +159,8 @@ addContact(){
      let findList = hostList.filter((host)=>{
        return host.hostName  === req.body.hostName
      })
-     let host =  new Host(findList.hostName,findList.ipAddress)
+     let host =  undefined
+     host = new Host(findList.hostName,findList.ipAddress,findList.selected,function(){
       Host.addContact(req,function(){
         for(let i =0 ; i < req.body.communicate.length ; i++){
           if(req.body.communicate[i].type === 'Facebook')
@@ -194,6 +195,8 @@ addContact(){
           }
         }
       })
+     })
+  
     }
   )
 }
