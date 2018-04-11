@@ -1,5 +1,6 @@
 import fs from 'fs'
-export default class FileOperator{
+import FileOperator from './FileOperator'
+export default class TxtOperator extends FileOperator{
     saveData(fileName,hostList){
         let content = JSON.stringify(hostList)
         var file = fs.createWriteStream('./'+fileName+'.txt')
@@ -14,4 +15,3 @@ export default class FileOperator{
         })
       }
   }
-

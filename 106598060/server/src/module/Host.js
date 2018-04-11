@@ -1,8 +1,8 @@
-import FileOperator from './FileOperator'
+import TxtOperator from './FileOperator/TxtOperator'
 import Contact from './Contact'
 export default class Host{
     constructor(hostName,ipAddress,selected){
-        this.fileoperator  =  new FileOperator
+        this.fileoperator  =  new TxtOperator
         let self = this
         this.fileoperator.readData('observerList',function(data){
             self.allObserverList = data
@@ -20,7 +20,7 @@ export default class Host{
         this.observerList =  this.allObserverList.filter((eachList)=>{
             return eachList.hostName === hostName
         })
-        let fileoperator = new FileOperator
+        let fileoperator = new TxtOperator
         let self = this
         if(this.observerList.length === 0){
             let info = {
@@ -61,7 +61,7 @@ export default class Host{
      
     }
     static addContact(req,callback){
-        let fileoperator = new FileOperator
+        let fileoperator = new TxtOperator
         let contact  = new Contact(req.body.contactName,req.body.communicate)
         var self = this
         fileoperator.readData('contactList',function(data){
@@ -94,7 +94,7 @@ export default class Host{
         })
     }
     static getContactList(hostName,callback){
-        let fileoperator = new FileOperator
+        let fileoperator = new TxtOperator
         fileoperator.readData('contactList',function(data){
             let allContactList = data
             let findContactList = allContactList.filter((eachList)=>{

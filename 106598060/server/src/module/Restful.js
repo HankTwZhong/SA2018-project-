@@ -26,7 +26,7 @@ startServer(){
     var self = this
     hostManage = new HostManager()
     hostManage.startMonitorHost(function(){
-      hostManage.setEachResponeHost(function(res){
+      hostManage.setEachResponeHost(function(){
         setIntervalId=hostManage.updateAllHostInterval()
       })
     })

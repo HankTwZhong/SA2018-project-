@@ -1,5 +1,5 @@
-import FileOperator from '../src/module/FileOperator'
-let fileOperator = new  FileOperator
+import TxtOperator from '../src/module/FileOperator/TxtOperator'
+let fileOperator = new  TxtOperator
 let assert = require('assert');
 let hostList=[]
 describe('Save Data', function() {

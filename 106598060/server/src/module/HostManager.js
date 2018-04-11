@@ -1,4 +1,4 @@
-import FileOperator from './FileOperator'
+import TxtOperator from './FileOperator/TxtOperator'
 import Host from './Host'
 import Timer from './Timer'
 import Observer from './Observer/Observer'
@@ -9,7 +9,7 @@ export default class HostManager{
     constructor(){
         this.hostL = []
         this.responseL = []
-        this.fileOperator = new FileOperator
+        this.fileOperator = new TxtOperator
     }
     startMonitorHost(callback){
         var self = this
@@ -83,7 +83,11 @@ export default class HostManager{
         var self =this
         let host = new Host(req.body.hostName, req.body.ipAddress, req.body.selected)
         host.contact = []
-        this.hostL.push(host)
+        this.hostL.push({
+            hostName:host.hostName,
+            ipAddress:host.ipAddress,
+            selected:host.selected
+        })
         this.fileOperator.saveData('hostList',this.hostL)
         let checkHostUseCase = new CheckHostUseCase
           checkHostUseCase.selectCommand(req.body,function(hostInfo){   
