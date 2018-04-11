@@ -1,7 +1,6 @@
 package Servlet;
 
-import Repository.HostRepository;
-import model.Host;
+import socket.ConnectServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,23 +12,15 @@ import java.io.IOException;
 
 @WebServlet(name = "EditHostServlet",urlPatterns = {"/EditHostServlet"})
 public class EditHostServlet extends HttpServlet {
-    private HostRepository hostRepository = HostRepositoryBuilder.Build();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         String name = request.getParameter("name");
         String ip = request.getParameter("ip");
-        System.out.println(action);
-        if(action.equals("create")){
-            Host host = new Host();
-            host.setHostIp(ip);
-            host.setHostName(name);
-            host.setLastCheck("null");
-            hostRepository.addHost(host);
-        }else if(action.equals("delete")){
-            hostRepository.deleteHost(ip);
-        }
-        String resultJSON = "{ \"result\" : true }";
+        String msg = "{\"action\":\""+action+"\",\"hostIp\":\""+ip+"\",\"hostName\":\""+name+"\"}";
+        ConnectServer connectServer = new ConnectServer("127.0.0.1",5050);
+        connectServer.sendMsgToServer(msg);
+        String resultJSON = connectServer.getMsgByServer();
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
         response.getWriter().write(resultJSON);
