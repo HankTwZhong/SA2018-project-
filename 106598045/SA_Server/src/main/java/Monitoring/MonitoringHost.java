@@ -49,7 +49,6 @@ public class MonitoringHost {
 			String timeStamp = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(Calendar.getInstance().getTime());
 			hostList.get(i).setLastCheck(timeStamp);
             String status = GetHostStatusCommand.execute(hostList.get(i).getHostIp(), hostList.get(i).getCheckMethod());
-            System.out.println(status);
             hostList.get(i).setStatus(status);
 		}
 		Gson gson = new Gson();

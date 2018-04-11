@@ -18,7 +18,6 @@ public class EditHost {
         }else if(action.equals("delete")){
             hostRepository.deleteHost(ip);
         }
-
         String resultJSON = "{ \"result\" : true }";
         return resultJSON;
     }

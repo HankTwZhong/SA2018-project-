@@ -58,7 +58,11 @@ public class StorageTxt implements StorageInterface {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile,true));
             StringBuilder sb = new StringBuilder();
-            sb.append(host.getHostName()).append(',').append(host.getHostIp()).append(',').append(host.getCheckMethod()).append(",null");
+            sb.append(host.getHostName()).append(",,");
+            sb.append(host.getHostIp()).append(",,");
+            sb.append(host.getCheckMethod()).append(",,");
+            sb.append("null,,");
+            sb.append("{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":[\"advrrf1548\"]},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":[\"online12345\"]}]}");
             sb.append('\n');
             out.write(sb.toString());
             out.close();
