@@ -1,12 +1,10 @@
-package Monitoring;
+package Monitor;
 
-import Repository.StorageInterface;
-import config.StorageConfig;
 import model.Host;
 
 public class EditHost {
-    private StorageInterface hostRepository = StorageConfig.Build();
-    protected String Edit(String action,String ip,String name) {
+    private StorageBuilder hostRepository = StorageDirector.Build();
+    public String Edit(String action,String ip,String name) {
         if(action.equals("create")){
             Host host = new Host();
             host.setHostIp(ip);

@@ -1,4 +1,4 @@
-package Monitoring;
+package Monitor;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -9,14 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 
-import Repository.StorageInterface;
-import config.StorageConfig;
 import model.Host;
-import Command.GetHostStatusCommand;
 
 public class MonitoringHost {
 	private ScheduledExecutorService scheduler;
-	private StorageInterface hostRepository = StorageConfig.Build();
+	private StorageBuilder hostRepository = StorageDirector.Build();
 	private ArrayList<Host> hostList = hostRepository.getHost();
 	
 	public MonitoringHost() {

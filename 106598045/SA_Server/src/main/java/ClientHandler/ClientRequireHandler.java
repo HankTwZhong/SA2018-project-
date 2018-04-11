@@ -1,5 +1,7 @@
-package Monitoring;
+package ClientHandler;
 
+import Monitor.EditHost;
+import Monitor.MonitoringHost;
 import com.google.gson.Gson;
 
 import java.io.DataInputStream;

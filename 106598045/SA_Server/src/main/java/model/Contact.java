@@ -11,7 +11,7 @@ public class Contact {
     private String method;
     private ArrayList<String> addressList;
 
-    Contact(final String contactName,final String email, final ArrayList<String> addressList) {
+    public Contact(final String contactName,final String email, final ArrayList<String> addressList) {
         this.name =contactName;
         this.email = email;
         this.addressList = addressList;

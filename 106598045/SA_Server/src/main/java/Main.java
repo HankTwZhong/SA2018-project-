@@ -3,8 +3,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import Monitoring.MonitoringHost;
-import Monitoring.ClientRequireHandler;
+import Monitor.MonitoringHost;
+import ClientHandler.ClientRequireHandler;
 
 public class Main {
     public static void main(String[] args) {
