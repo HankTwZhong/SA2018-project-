@@ -46,7 +46,6 @@ export default class Host{
     notifyAll(){
         let self = this
         this.fileoperator.readData('observerList',function(data){
-            console.log(data)
             self.allObserverList = data
             let notifyHost = self.allObserverList.filter((eachList)=>{
                 return eachList.hostName === self.hostName

@@ -1,8 +1,8 @@
 import fs from 'fs'
 import FileOperator from './FileOperator'
 export default class TxtOperator extends FileOperator{
-    saveData(fileName,hostList){
-        let content = JSON.stringify(hostList)
+    saveData(fileName,data){
+        let content = JSON.stringify(data)
         var file = fs.createWriteStream('./'+fileName+'.txt')
         file.on('error', function(err) { /* error handling */ })
            file.write(content)
