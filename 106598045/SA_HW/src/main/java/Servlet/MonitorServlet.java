@@ -1,38 +1,21 @@
 package Servlet;
 
-import Repository.HostRepository;
-import com.google.gson.Gson;
-import model.Host;
-import model.Monitor;
+import socket.ConnectServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
+import java.io.IOException;
 
 @WebServlet(name = "/MonitorServlet",urlPatterns = {"/MonitorServlet"})
 public class MonitorServlet extends HttpServlet {
-    private HostRepository hostRepository = HostRepositoryBuilder.Build();
-    private Gson gson = new Gson();
-    Monitor m = new Monitor();
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException{
-        List<Host> list = hostRepository.getHost();
-        for(int i=0;i<list.size();i++){
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss").format(Calendar.getInstance().getTime());
-            list.get(i).setLastCheck(timeStamp);
-            if(m.ping(list.get(i).getHostIp())){
-                list.get(i).setStatus("OK");
-            }else{
-                list.get(i).setStatus("ERROR");
-            }
-        }
-        String resultJSON = "{ \"result\" : "+gson.toJson(list)+" }";
+        String msg = "{\"action\":\"monitor\"}";
+        ConnectServer connectServer = new ConnectServer("127.0.0.1",5050);
+        connectServer.sendMsgToServer(msg);
+        String resultJSON = connectServer.getMsgByServer();
         response.setCharacterEncoding("utf-8");
         response.setContentType("application/json");
         try {
