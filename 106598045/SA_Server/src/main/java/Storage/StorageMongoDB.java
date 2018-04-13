@@ -1,10 +1,7 @@
 package Storage;
 
-import Repository.StorageInterface;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import Monitor.StorageBuilder;
+import com.google.gson.*;
 import model.Contact;
 import model.Host;
 import java.text.SimpleDateFormat;
@@ -21,7 +18,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import static com.mongodb.client.model.Filters.eq;
 
-public class StorageMongoDB implements StorageInterface {
+public class StorageMongoDB implements StorageBuilder {
     private MongoClient mongoClient;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> collection;
@@ -46,9 +43,11 @@ public class StorageMongoDB implements StorageInterface {
         }
     }
     public void addHost(Host host){
-        collection = getDB();
+        collection = getMlab();
         Document doc =new Document("hostName", host.getHostName())
-                .append("hostIp", host.getHostIp());
+                .append("hostIp", host.getHostIp())
+                .append("checkMethod",host.getCheckMethod())
+                .append("contact","{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":[\"advrrf1548\"]},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":[\"online12345\"]}]}");
         collection.insertOne(doc);
         mongoClient.close();
     }
@@ -71,7 +70,7 @@ public class StorageMongoDB implements StorageInterface {
     }
 
     public void deleteHost(String hostIp){
-        collection = getDB();
+        collection = getMlab();
         collection.deleteOne(eq("hostIp", hostIp));
         mongoClient.close();
     }
@@ -83,17 +82,20 @@ public class StorageMongoDB implements StorageInterface {
         return strDate;
     }
 
-    public ArrayList<Contact> getContactByString(String str){
+    private ArrayList<Contact> getContactByString(String str){
         Gson gson = new Gson();
         ArrayList<Contact> list = new ArrayList<Contact>();
         Map<String,String> map = new HashMap<String,String>();
         Map<String,ArrayList<String>> contactListMap = (Map<String,ArrayList<String>>) gson.fromJson(str,map.getClass());
         ArrayList<String> arrayList = contactListMap.get("contact");
-        JsonParser parser = new JsonParser();
-        JsonElement elem   = parser.parse(arrayList.toString());
-        JsonArray elemArr = elem.getAsJsonArray();
-        for(int i = 0; i< elemArr.size();i++){
-            Contact contact = new Gson().fromJson(elemArr.get(i), Contact.class);
+        JsonArray array = new JsonParser().parse(arrayList.toString()).getAsJsonArray();
+        for (JsonElement jsonElement : array) {
+            JsonObject jsonObject = new JsonParser().parse(jsonElement.toString()).getAsJsonObject();
+            String name = jsonObject.get("name").toString();
+            String email = jsonObject.get("email").toString();
+            JsonArray jsonArray = jsonObject.get("addressList").getAsJsonArray();
+            ArrayList<String> contactList = (ArrayList<String>) gson.fromJson(jsonArray,arrayList.getClass());
+            Contact contact = new Contact(name,email,contactList);
             list.add(contact);
         }
         return list;

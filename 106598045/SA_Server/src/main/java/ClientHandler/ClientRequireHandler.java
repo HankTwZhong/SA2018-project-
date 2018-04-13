@@ -1,5 +1,7 @@
-package Monitoring;
+package ClientHandler;
 
+import Monitor.EditHost;
+import Monitor.MonitoringHost;
 import com.google.gson.Gson;
 
 import java.io.DataInputStream;
@@ -37,7 +39,6 @@ public class ClientRequireHandler implements Runnable {
                 Map<String,String> map = new HashMap<String,String>();
                 Map<String,String> clientMsg = (Map<String,String>) gson.fromJson(msg, map.getClass());
                 String response ="";
-                //System.out.println("clientMsg : " + clientMsg);
                 String action = clientMsg.get("action");
                 if(action.equals("monitor")){
                     response =  "{ \"result\" : "+MonitorSchedule.getHostListJson()+" }";
@@ -48,10 +49,10 @@ public class ClientRequireHandler implements Runnable {
                     MonitorSchedule.monitorHost();
                 }
                 sendMsgToClient(response);
-                System.out.println("response to client : " + response);
+                System.out.println("response to client ");
             }
         } catch (IOException e) {
-            System.out.println("client disconnect, error message : "+e.toString());
+            //System.out.println("client disconnect, error message : "+e.toString());
         }
     }
 

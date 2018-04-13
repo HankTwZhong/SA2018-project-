@@ -10,15 +10,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Repository.StorageInterface;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import Monitor.StorageBuilder;
+import com.google.gson.*;
 import model.Contact;
 import model.Host;
-import com.google.gson.Gson;
 
-public class StorageTxt implements StorageInterface {
+public class StorageTxt implements StorageBuilder {
     String path;
     String csvFile;
 
@@ -58,7 +55,11 @@ public class StorageTxt implements StorageInterface {
         try {
             BufferedWriter out = new BufferedWriter(new FileWriter(this.csvFile,true));
             StringBuilder sb = new StringBuilder();
-            sb.append(host.getHostName()).append(',').append(host.getHostIp()).append(',').append(host.getCheckMethod()).append(",null");
+            sb.append(host.getHostName()).append(",,");
+            sb.append(host.getHostIp()).append(",,");
+            sb.append(host.getCheckMethod()).append(",,");
+            sb.append("null,,");
+            sb.append("{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":[\"advrrf1548\"]},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":[\"online12345\"]}]}");
             sb.append('\n');
             out.write(sb.toString());
             out.close();
@@ -106,11 +107,14 @@ public class StorageTxt implements StorageInterface {
         Map<String,String> map = new HashMap<String,String>();
         Map<String,ArrayList<String>> contactListMap = (Map<String,ArrayList<String>>) gson.fromJson(str,map.getClass());
         ArrayList<String> arrayList = contactListMap.get("contact");
-        JsonParser parser = new JsonParser();
-        JsonElement elem   = parser.parse(arrayList.toString());
-        JsonArray elemArr = elem.getAsJsonArray();
-        for(int i = 0; i< elemArr.size();i++){
-            Contact contact = new Gson().fromJson(elemArr.get(i), Contact.class);
+        JsonArray array = new JsonParser().parse(arrayList.toString()).getAsJsonArray();
+        for (JsonElement jsonElement : array) {
+            JsonObject jsonObject = new JsonParser().parse(jsonElement.toString()).getAsJsonObject();
+            String name = jsonObject.get("name").toString();
+            String email = jsonObject.get("email").toString();
+            JsonArray jsonArray = jsonObject.get("addressList").getAsJsonArray();
+            ArrayList<String> contactList = (ArrayList<String>) gson.fromJson(jsonArray,arrayList.getClass());
+            Contact contact = new Contact(name,email,contactList);
             list.add(contact);
         }
         return list;

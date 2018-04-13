@@ -1,16 +1,15 @@
-package config;
+package Monitor;
 
 import java.io.FileInputStream;
 import java.util.Properties;
 
-import Repository.StorageInterface;
 import Storage.StorageMongoDB;
 import Storage.StorageTxt;
 
-public class StorageConfig {
-    public static StorageInterface Build() {
+public class StorageDirector {
+    public static StorageBuilder Build() {
         Properties properties = new Properties();
-        String path = ""+ StorageConfig.class.getClassLoader().getResource("");
+        String path = ""+ StorageDirector.class.getClassLoader().getResource("");
         String configFile = path.substring(6) + "storageConf.properties";
         try {
             properties.load(new FileInputStream(configFile));

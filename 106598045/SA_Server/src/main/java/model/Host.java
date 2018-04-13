@@ -1,10 +1,8 @@
 package model;
 
-import Command.GetHostStatusCommand;
-import Notify.SendingEmail;
+import Notify.EmailObserver;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Host {
     private String hostName;
