@@ -1,0 +1,29 @@
+{
+  "name": "saserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "babel-node": "babel-node --presets=latest",
+    "start": "nodemon src/main.js --exec babel-node --presets es2015",
+    "test": "mocha --compilers js:babel-core/register",
+    "fake": "nodemon fakeData.js --exec babel-node --presets es2015"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.2",
+    "moment": "^2.21.0",
+    "ping": "^0.2.2",
+    "router": "^1.3.2",
+    "is-all-reachable": "1.1.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "mocha": "^5.0.1"
+  }
+}
