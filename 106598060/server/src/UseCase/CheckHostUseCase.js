@@ -1,4 +1,3 @@
-import Host from '../Entity/Host'
 import PingCommand from '../UseCase/PingCommand'
 import IsReachableCommand from '../UseCase/IsReachableCommand';
 import moment from 'moment'
@@ -6,7 +5,7 @@ import moment from 'moment'
 export default class CheckHostUseCase{
     checkHostStatus(hostManage,callback){
         let responseList= hostManage.getAllHost()
-        let hostList = hostManage.getHostList()
+        let hostList = hostManage.applicationContext.getAllHostList()
         var self = this
         hostList.forEach(function(host){
             self.selectCommand(host,function(hostInfo){
@@ -16,8 +15,7 @@ export default class CheckHostUseCase{
                 {
                     if(responseList[i].active !==  hostInfo.active)
                     {
-                        let host = new Host(responseList[i].hostName,responseList[i].ipAddress, responseList[i].selected)
-                        host.notifyAll()
+                        hostList[i].notifyAll(responseList[i].hostName,hostManage.applicationContext)
                     }
                     responseList[i].active =  hostInfo.active
                     responseList[i].date  = hostInfo.date

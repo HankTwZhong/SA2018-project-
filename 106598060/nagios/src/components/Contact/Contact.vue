@@ -5,7 +5,7 @@
        <a class="navbar-brand">{{this.hostName}}</a>&nbsp;&nbsp;&nbsp;&nbsp;
     </ul>
     <ul class="nav navbar-nav navbar-right">
-        <add-contact :hostName="this.hostName"></add-contact>
+        <add-contact :hostName="this.hostName" v-on:sendContact="sendContact()"></add-contact>
             <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
             <span class="glyphicon glyphicon-user"></span> 新增聯絡人</button>
             <button class="btn btn-primary btn-sm" @click="backList()">
@@ -13,7 +13,7 @@
     </ul>
     <div class="row">      
       <div class="col-md-12">
-           <contact-table :contactUrl="this.contactUrl" :hostName="this.hostName" :hostIP="this.hostIP"></contact-table>
+           <contact-table ref="ContactTable" :contactUrl="this.contactUrl" :hostName="this.hostName" :hostIP="this.hostIP"></contact-table>
       </div>
     </div>
 </div>
@@ -43,7 +43,13 @@ export default {
   computed: {
     ...mapGetters({contactUrl: 'getContactUrl', hostIP: 'getIP',hostName:'getHostName'})
   },
+  mounted(){
+      console.log('weijfw')
+  },
   methods:{
+      sendContact(){
+          this.$refs.ContactTable.refresh()
+      },
       backList(){
           this.$router.push({
                 path: '/nagios-hw3'

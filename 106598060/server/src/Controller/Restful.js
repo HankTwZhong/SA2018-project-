@@ -5,9 +5,10 @@ import EmailObserver from '../UseCase/EmailObserver';
 import SkypeObserver from '../UseCase/SkypeObserver';
 import TelephoneObserver from '../UseCase/TelephoneObserver';
 import Host from '../Entity/Host'
+import ApplicationContext from '../UseCase/ApplicationContext' 
+import { callbackify } from 'util';
 
 
-let hostManage
 var express = require('express')
 var app = express()
 const cors = require('cors')
@@ -20,46 +21,53 @@ app.use(cors())
 app.options('*',cors())
 
 export default class Restful{
-
-startServer(){
-  app.listen(3000, function () {
-    var self = this
-    hostManage = new HostManager()
-    hostManage.startMonitorHost(function(){
-      hostManage.setEachResponeHost(function(){
-        setIntervalId=hostManage.updateAllHostInterval()
-      })
+  constructor(callback){
+    this.hostManager = undefined
+    let self = this
+    this.applicationContext = new ApplicationContext(()=>{
+      self.hostManager = new HostManager(this.applicationContext)
+      callback()
     })
-    console.log('Example app listening on port 3000!');
+  }
+startServer(){
+  var self = this
+  app.listen(3000, function () {
+      self.hostManager.setEachResponeHost(function(){
+        setIntervalId=self.hostManager.updateAllHostInterval()
+      })
+    console.log('App listening on port 3000!');
   })
 }
 addHost(){
+  let self = this
   app.post('/addHost',function(req,res){
-    let hostList = hostManage.getHostList()
+    let hostList = self.applicationContext.getHostList()
     if(req.body.hostName === undefined || req.body.ipAddress === undefined || req.body.selected === undefined)
     res.send('')
     else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)>=0 )
     res.send('There has same host')
     else{
-      hostManage.addHost(req,function(){
+      self.hostManager.addHost(req.body,function(){
         res.send('Host: "'+ req.body.hostName + '" was added success')
       })
     }
   })
 }
 deleteHost(){
+  let self = this
   app.post('/deleteHost',function(req,res){
     clearInterval(setIntervalId)
-    hostManage.deleteHost(req.body.hostName,function(hostName){
+    self.hostManager.deleteHost(req.body.hostName,function(hostName){
       console.log('hostName' + hostName )
-      setIntervalId=hostManage.updateAllHostInterval()
+      setIntervalId=self.hostManager.updateAllHostInterval()
       res.send('host "'+ hostName +' "has been delete')
       })
   })
 }
 getHostData(){
+  let self = this
   app.post('/getHostsData', function (req, res) {
-      var responseList = hostManage.getAllHost() 
+      var responseList = self.hostManager.getAllHost() 
       let page = req.query.page
       let per_page = req.query.per_page
       let current_page = 1
@@ -93,9 +101,10 @@ getHostData(){
   })
 }
 getContact(){
+  let self = this
   app.post('/getContact',function(req,res){
     let contactList  
-    Host.getContactList(req.query.hostName,((specificContactList)=>{
+      let specificContactList = self.applicationContext.getContactList(req.query.hostName)
       if(specificContactList.length>0)
       contactList = specificContactList[0].contactList
       if(contactList !== undefined){
@@ -148,53 +157,34 @@ getContact(){
         vuetableFormat.to = 10 * current_page
         vuetableFormat.data =contactList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
         res.json(vuetableFormat)
-    }))
-
   })
 }
 addContact(){
+  let self = this
     app.post('/addContact',function(req,res){
-     let hostList = hostManage.getHostList()
-     let findList = hostList.filter((host)=>{
-       return host.hostName  === req.body.hostName
+     let hostList = self.applicationContext.getAllHostList()
+     let host
+     hostList.forEach((eachHost)=>{
+        if(eachHost.hostName  === req.body.hostName)
+        host = eachHost
      })
-     let host =  undefined
-     host = new Host(findList.hostName,findList.ipAddress,findList.selected,function(){
-      Host.addContact(req,function(){
+      host.addContact(req.body,self.applicationContext,function(){
+        let observerList =  []
         for(let i =0 ; i < req.body.communicate.length ; i++){
           if(req.body.communicate[i].type === 'Facebook')
-          {
-            const facebookObserver = new FacebookObserver()
-            host.attach(req.body.hostName,facebookObserver)
-          }
+            observerList.push(new FacebookObserver())
           if(req.body.communicate[i].type === 'Telephone')
-          {
-            const telephoneObserver = new TelephoneObserver()
-            host.attach(req.body.hostName,telephoneObserver)
-          }
+            observerList.push(new TelephoneObserver())
           if(req.body.communicate[i].type === 'Email')
-          {
-            const emailObserver = new EmailObserver()
-            host.attach(req.body.hostName,emailObserver)
-          }
+            observerList.push(new EmailObserver())
           if(req.body.communicate[i].type === 'Skype')
-          {
-            const skypeObserver = new SkypeObserver()
-            host.attach(req.body.hostName,skypeObserver)
-          }
+            observerList.push(new SkypeObserver())
           if(req.body.communicate[i].type === 'LineID')
-          {
-            const lineObserver = new LineObserver()
-            host.attach(req.body.hostName,lineObserver)
-          }
-          if(i=== req.body.communicate.length-1)
-            {
-              host.observerToTxt()
-              res.send('add success')
-          }
+            observerList.push(new LineObserver())
         }
+        host.attach(req.body.hostName,self.applicationContext,observerList)
+        res.send('Attach Observer Success')
       })
-     })
   
     }
   )

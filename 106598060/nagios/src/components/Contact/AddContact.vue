@@ -64,6 +64,7 @@ const axios= require('axios')
             communicate: this.contactData
           })
           .then((res) => {
+            this.$emit('sendContact')
             console.log(res)
             this.contactData =[]
             this.contactName =[]

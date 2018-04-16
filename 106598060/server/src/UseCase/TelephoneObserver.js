@@ -1,6 +1,5 @@
 import Observer from '../Entity/Observer'
 
-
 export default class TelephoneObserver extends Observer{
     constructor(){
         super()

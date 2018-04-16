@@ -136,7 +136,6 @@
     mounted() {},
     methods: {
       contact(hostData) {
-        console.log(hostData)
         this.actionContact(hostData)
         this.$router.push({
           path: '/conTact'

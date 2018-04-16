@@ -1,29 +1,16 @@
-import TxtOperator from '../Adapter/TxtOperator'
 import Host from '../Entity/Host'
 import Timer from '../UseCase/Timer'
-import Observer from '../Entity/Observer'
 import CheckHostUseCase from '../UseCase/CheckHostUseCase'
 import ApplicationContext from './ApplicationContext'
 
-
 export default class HostManager{
-    constructor(){
-        this.hostL = []
+    constructor(applicationContext){
         this.responseL = []
-        this.fileOperator = new TxtOperator
-        this.applicationContext= undefined
+        this.applicationContext= applicationContext
     }
-    startMonitorHost(callback){
-        var self  =  this
-        this.applicationContext = new ApplicationContext(()=>{
-            self.hostL = this.applicationContext.getAllHostList()
-            callback()
-        })
-    }
-
     updateAllHostInterval(){
         const frequency = 5000
-        console.log('only once')
+        console.log('IntervalMonitor every ' + frequency/1000 +' sec')
         let timer = new Timer(frequency)
         let setIntervalId  =  timer.pingInterval(this)
         return setIntervalId
@@ -31,50 +18,43 @@ export default class HostManager{
     setEachResponeHost(callback){
         let count = 0
         let self = this
-        this.hostL.forEach(function(host){
-          count++
-          let checkHostUseCase = new CheckHostUseCase
-          checkHostUseCase.selectCommand(host,function(hostInfo){
-            self.responseL.push(hostInfo)
-          })
-          if(count === self.hostL.length)
-            callback(self.responseL)
+        this.applicationContext.getAllHostList().forEach(function(host){
+            let checkHostUseCase = new CheckHostUseCase
+            checkHostUseCase.selectCommand(host,function(hostInfo){
+                count++
+                self.responseL.push(hostInfo)
+                if(count === self.applicationContext.getAllHostList().length)
+                callback()
+            })
         })
       
     }
     getAllHost(){
           return this.responseL
     }
-    getHostList(){
-            return this.hostL
-    }
     deleteHost(hostName,callback){
         let self = this
         this.applicationContext.deleteHost(hostName,((restHost,deletedHostName)=>{
-            this.hostL =  restHost
             this.responseL = this.responseL.filter((hostData)=>{
                 return hostData.hostName !== hostName
             })
             callback(deletedHostName)
         }))
     }
-    setHostList(hostList){
-        this.hostL = hostList
-    }
     setResponseH(responseList){
         this.responseL = responseList
     }
-
-    addHost(req,callback){
+    addHost(hostObject,callback){
         var self =this
-        let host = new Host(req.body.hostName, req.body.ipAddress, req.body.selected)
-        this.applicationContext.addHost(host,((hostList)=>{
-            self.hostL = hostList
+        let host = new Host(hostObject.hostName, hostObject.ipAddress, hostObject.selected)
+        this.applicationContext.addHost(host,(()=>{
+
         }))
         let checkHostUseCase = new CheckHostUseCase
-          checkHostUseCase.selectCommand(req.body,function(hostInfo){   
+          checkHostUseCase.selectCommand(hostObject,function(hostInfo){   
             self.responseL.push(hostInfo)
             callback()
           })
     }
+
 }

@@ -45,11 +45,13 @@ export default class ApplicationContext{
                         observerList:self.observerList
                     })
                 })
-                // console.log(self.allObserverList)
             }))
         }
     getAllHostList(){
         return this.allHostList
+    }
+    getAllContactList(){
+        return this.allContactList
     }
     getHostList(hostName,callback){
         return this.allHostList.filter((host)=>{
@@ -94,5 +96,33 @@ export default class ApplicationContext{
         this.allHostList.push(hostObject)
         txtOperator.saveData('hostList',this.allHostList)          
         callback(this.allHostList)
+    }
+    addContact(hostName,contactObject,callback){
+        let index =this.allContactList.map(function(contactList) { return contactList.hostName}).indexOf(hostName)
+        if(index === -1)
+        this.allContactList.push({
+            hostName:hostName,
+            contactList:[contactObject]
+        })
+        else
+        this.allContactList[index].contactList.push(contactObject)
+        txtOperator.saveData('contactList',this.allContactList) 
+        callback()    
+    }
+    addObserver(hostName,observerList){
+        let index =this.allObserverList.map(function(observerList) { return observerList.hostName}).indexOf(hostName)
+        let self = this
+        if(index === -1)
+        self.allObserverList.push({
+            hostName:hostName,
+            observerList:observerList
+        })
+        else{
+            observerList.forEach((eachObserver)=>{
+                if(self.allObserverList[index].observerList.map((observer)=>{return observer.name}).indexOf(eachObserver.name) === -1)
+                self.allObserverList[index].observerList.push(eachObserver)
+            })
+        }
+        txtOperator.saveData('observerList',this.allObserverList)
     }
 }
