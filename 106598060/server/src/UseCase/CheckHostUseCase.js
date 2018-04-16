@@ -1,6 +1,6 @@
-import Host from './Host'
-import PingCommand from './Command/PingCommand'
-import IsReachableCommand from './Command/IsReachableCommand';
+import Host from '../Entity/Host'
+import PingCommand from '../UseCase/PingCommand'
+import IsReachableCommand from '../UseCase/IsReachableCommand';
 import moment from 'moment'
 
 export default class CheckHostUseCase{

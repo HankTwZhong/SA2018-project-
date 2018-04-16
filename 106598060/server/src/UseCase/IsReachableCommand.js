@@ -1,4 +1,4 @@
-import Command from "./Command"
+import Command from "../Entity/Command"
 const isAllReachable = require('is-all-reachable')
 
 export default class IsReachableCommand extends Command{

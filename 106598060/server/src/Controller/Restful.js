@@ -1,10 +1,10 @@
-import HostManager from './HostManager'
-import FacebookObserver from './Observer/FacebookObserver';
-import LineObserver from './Observer/LineObserver';
-import EmailObserver from './Observer/EmailObserver';
-import SkypeObserver from './Observer/SkypeObserver';
-import TelephoneObserver from './Observer/TelephoneObserver';
-import Host from './Host'
+import HostManager from '../UseCase/HostManager'
+import FacebookObserver from '../UseCase/FacebookObserver';
+import LineObserver from '../UseCase/LineObserver';
+import EmailObserver from '../UseCase/EmailObserver';
+import SkypeObserver from '../UseCase/SkypeObserver';
+import TelephoneObserver from '../UseCase/TelephoneObserver';
+import Host from '../Entity/Host'
 
 
 let hostManage
@@ -49,12 +49,11 @@ addHost(){
 }
 deleteHost(){
   app.post('/deleteHost',function(req,res){
-    var hostList = hostManage.getHostList()  
     clearInterval(setIntervalId)
-    hostManage.deleteHost(req,function(hostList){
+    hostManage.deleteHost(req.body.hostName,function(hostName){
+      console.log('hostName' + hostName )
       setIntervalId=hostManage.updateAllHostInterval()
-          
-          res.send('host'+ hostList.hostName +'has been delete')
+      res.send('host "'+ hostName +' "has been delete')
       })
   })
 }

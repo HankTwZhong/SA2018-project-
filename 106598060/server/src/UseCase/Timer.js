@@ -1,4 +1,4 @@
-import Host from './Host'
+import Host from '../Entity/Host'
 import CheckHostUseCase from './CheckHostUseCase'
 export default class Timer{
     constructor(frequency){

@@ -203,6 +203,7 @@
             hostName: hostData.hostName
           })
           .then((res) => {
+            console.log(res)
             this.refreshed()
             this.buttonDisable = false
           })

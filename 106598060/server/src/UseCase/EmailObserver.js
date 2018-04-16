@@ -1,4 +1,4 @@
-import Observer from './Observer'
+import Observer from '../Entity/Observer'
 
 
 export default class EmailObserver extends Observer{
