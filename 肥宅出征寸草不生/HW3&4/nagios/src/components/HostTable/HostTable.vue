@@ -136,6 +136,7 @@
     mounted() {},
     methods: {
       contact(hostData) {
+        console.log(hostData)
         this.actionContact(hostData)
         this.$router.push({
           path: '/conTact'
@@ -202,7 +203,6 @@
             hostName: hostData.hostName
           })
           .then((res) => {
-            console.log(res)
             this.refreshed()
             this.buttonDisable = false
           })
