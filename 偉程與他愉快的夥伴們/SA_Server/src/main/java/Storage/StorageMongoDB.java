@@ -47,7 +47,7 @@ public class StorageMongoDB implements StorageBuilder {
         Document doc =new Document("hostName", host.getHostName())
                 .append("hostIp", host.getHostIp())
                 .append("checkMethod",host.getCheckMethod())
-                .append("contact","{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":[\"advrrf1548\"]},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":[\"online12345\"]}]}");
+                .append("contact","{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":{\"FB\":[\"advrrf1548\"],\"LINE\":[\"aaaa123\"]}},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":{\"FB\":[\"online12345\"]}}]}");
         collection.insertOne(doc);
         mongoClient.close();
     }
@@ -82,6 +82,7 @@ public class StorageMongoDB implements StorageBuilder {
         return strDate;
     }
 
+    //將json格式之String轉為arrayList
     private ArrayList<Contact> getContactByString(String str){
         Gson gson = new Gson();
         ArrayList<Contact> list = new ArrayList<Contact>();
@@ -93,8 +94,9 @@ public class StorageMongoDB implements StorageBuilder {
             JsonObject jsonObject = new JsonParser().parse(jsonElement.toString()).getAsJsonObject();
             String name = jsonObject.get("name").toString();
             String email = jsonObject.get("email").toString();
-            JsonArray jsonArray = jsonObject.get("addressList").getAsJsonArray();
-            ArrayList<String> contactList = (ArrayList<String>) gson.fromJson(jsonArray,arrayList.getClass());
+            jsonObject = jsonObject.get("addressList").getAsJsonObject();
+            Map<String,ArrayList<String>> contactList = (Map<String,ArrayList<String>>) gson.fromJson(jsonObject,contactListMap.getClass());
+            System.out.println(contactList);
             Contact contact = new Contact(name,email,contactList);
             list.add(contact);
         }
