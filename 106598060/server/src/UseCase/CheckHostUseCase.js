@@ -1,21 +1,23 @@
-import PingCommand from '../UseCase/PingCommand'
-import IsReachableCommand from '../UseCase/IsReachableCommand';
+
 import moment from 'moment'
+import PingCommand from './PingCommand'
+import IsReachableCommand from './IsReachableCommand';
 
 export default class CheckHostUseCase{
+    constructor(){
+        this.pingCommand = new PingCommand()
+        this.isReachableCommand = new IsReachableCommand()  
+    }
     checkHostStatus(hostManage,callback){
         let responseList= hostManage.getAllHost()
         let hostList = hostManage.applicationContext.getAllHostList()
         var self = this
         hostList.forEach(function(host){
             self.selectCommand(host,function(hostInfo){
-            for(var i = 0 ; i <responseList.length; i++)
-            {
-              if(responseList[i].hostName === hostInfo.hostName)
-                {
-                    if(responseList[i].active !==  hostInfo.active)
-                    {
-                        hostList[i].notifyAll(responseList[i].hostName,hostManage.applicationContext)
+            for(var i = 0 ; i <responseList.length; i++){
+              if(responseList[i].hostName === hostInfo.hostName){
+                    if(responseList[i].active !==  hostInfo.active){
+                        hostList[i].notifyAll(responseList[i].hostName,hostInfo.active,hostManage.applicationContext)
                     }
                     responseList[i].active =  hostInfo.active
                     responseList[i].date  = hostInfo.date
@@ -27,17 +29,15 @@ export default class CheckHostUseCase{
     }
     selectCommand(host,callback){
         let self = this
-        if (host.selected == 'Ping'){
-            let pingCommand = new PingCommand()
-            pingCommand.monitor(host.ipAddress, ((active)=>{
+        if (host.selected === 'Ping'){
+            self.pingCommand.monitor(host.ipAddress, ((active)=>{
                 self.setResponseData(host,active,((hostInfo)=>{
                     callback(hostInfo)
                 }))
             }))
         }
-        else if(host.selected == 'isReachable'){
-            let isReachableCommand = new IsReachableCommand()
-            isReachableCommand.monitor(host.ipAddress, ((active)=>{
+        else if(host.selected === 'isReachable'){
+            self.isReachableCommand.monitor(host.ipAddress, ((active)=>{
                 self.setResponseData(host,active,((hostInfo)=>{
                     callback(hostInfo)
                 }))

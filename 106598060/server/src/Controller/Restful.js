@@ -6,7 +6,6 @@ import SkypeObserver from '../UseCase/SkypeObserver';
 import TelephoneObserver from '../UseCase/TelephoneObserver';
 import Host from '../Entity/Host'
 import ApplicationContext from '../UseCase/ApplicationContext' 
-import { callbackify } from 'util';
 
 
 var express = require('express')
