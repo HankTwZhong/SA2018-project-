@@ -1,6 +1,10 @@
 export default class Contact{
-    constructor(contactName,communicate){
+    constructor(contactName,facebookAddress,lineIDAddress,skypeAddress,telephoneAddress,emailAddress){
         this.contactName = contactName
-        this.communicate = communicate
+        this.facebookAddress = facebookAddress
+        this.lineIDAddress = lineIDAddress
+        this.skypeAddress = skypeAddress
+        this.telephoneAddress = telephoneAddress
+        this.emailAddress = emailAddress
     }
 }

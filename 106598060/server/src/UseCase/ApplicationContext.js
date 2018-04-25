@@ -11,65 +11,85 @@ let txtOperator = new TxtOperator
 
 export default class ApplicationContext{
     constructor(callback){
-            this.allHostList = []
-            let self = this
-            txtOperator.readData('hostList',((allHostList)=>{
-                allHostList.forEach((host)=>{
-                    self.allHostList.push(new Host(host.hostName,host.ipAddress,host.selected))
+        let self = this
+        this.readAllObserverList((allObserverList)=>{
+            self.allObserverList = allObserverList
+            self.readAllContactList((allContactList)=>{
+                self.allContactList = allContactList
+                self.readAllhostList(allObserverList,allContactList,(allHostList)=>{
+                    self.allHostList = allHostList
+                    callback()
                 })
-                if(callback)callback()
-            }))
-            txtOperator.readData('contactList',((allContactList)=>{
-                self.allContactList = allContactList            
-            }))
-            txtOperator.readData('observerList',((allObserverList)=>{
-                self.allObserverList = []
-                allObserverList.forEach((observerList)=>{
-                    self.observerList = []
-                    observerList.observerList.forEach((observer)=>{
-                        let currentObserver
-                        if(observer.name === 'facebookObserver')
-                            currentObserver = new FacebookObserver()
-                        else if(observer.name === 'telephoneObserver')
-                            currentObserver = new TelephoneObserver()
-                        else if(observer.name === 'emailObserver')
-                            currentObserver = new EmailObserver()
-                        else if(observer.name === 'skpyeObserver')
-                            currentObserver = new SkypeObserver()
-                        else if(observer.name === 'lineObserver')
-                            currentObserver = new LineObserver()
-                        self.observerList.push(currentObserver)
-                    })
-                    self.allObserverList.push({
-                        hostName:observerList.hostName,
-                        observerList:self.observerList
-                    })
+            })
+        })
+    }
+    readAllhostList(allObserverList,allContactList,callback){
+        let hostList = []
+        txtOperator.readData('hostList',((allHostList)=>{
+            allHostList.forEach((host)=>{
+                let observerList =[]
+                let contactList = []
+                for(let i = 0;i<allObserverList.length;i++){
+                    if(host.hostName === allObserverList[i].hostName)
+                        observerList = allObserverList[i].observerList
+                }
+                for(let i = 0;i<allContactList.length;i++){
+                    if(host.hostName === allContactList[i].hostName)
+                    contactList = allContactList[i].contactList
+                }
+                hostList.push(new Host(host.hostName,host.ipAddress,host.selected,contactList,observerList))
+
+            })
+            callback(hostList)
+        }))
+    }
+    readAllContactList(callback){
+        txtOperator.readData('contactList',((allContactList)=>{
+            callback(allContactList)            
+        }))
+    }
+    readAllObserverList(callback){
+        let list = []
+        txtOperator.readData('observerList',((allObserverList)=>{
+            allObserverList.forEach((observerList)=>{
+                let list2 = []
+                observerList.observerList.forEach((observer)=>{
+                    let currentObserver
+                    if(observer.name === 'facebookObserver')
+                        currentObserver = new FacebookObserver()
+                    else if(observer.name === 'telephoneObserver')
+                        currentObserver = new TelephoneObserver()
+                    else if(observer.name === 'emailObserver')
+                        currentObserver = new EmailObserver()
+                    else if(observer.name === 'skpyeObserver')
+                        currentObserver = new SkypeObserver()
+                    else if(observer.name === 'lineObserver')
+                        currentObserver = new LineObserver()
+                        list2.push(currentObserver)
                 })
-            }))
-        }
+                list.push({
+                    hostName:observerList.hostName,
+                    observerList:list2
+                })
+            })
+            callback(list)
+        }))
+    }
     getAllHostList(){
         return this.allHostList
     }
     getAllContactList(){
         return this.allContactList
     }
-    getHostList(hostName,callback){
-        return this.allHostList.filter((host)=>{
-            return hostName === host.hostName
-        })
-        if(callback)callback()
-    }
     getContactList(hostName,callback){
         return this.allContactList.filter((contactList)=>{
             return contactList.hostName === hostName
         })
-        if(callback)callback()        
     }
     getObserverList(hostName,callback){
         return this.allObserverList.filter((observerList)=>{
             return observerList.hostName === hostName
         })
-        if(callback)callback()
     }
     deleteObserver(hostName){
         this.allObserverList = this.allObserverList.filter((observerList)=>{
@@ -97,7 +117,8 @@ export default class ApplicationContext{
         txtOperator.saveData('hostList',this.allHostList)          
         callback(this.allHostList)
     }
-    addContact(hostName,contactObject,callback){
+    addContact(hostName,contactObject){
+        delete contactObject.hostName
         let index =this.allContactList.map(function(contactList) { return contactList.hostName}).indexOf(hostName)
         if(index === -1)
         this.allContactList.push({
@@ -107,7 +128,6 @@ export default class ApplicationContext{
         else
         this.allContactList[index].contactList.push(contactObject)
         txtOperator.saveData('contactList',this.allContactList) 
-        callback()    
     }
     addObserver(hostName,observerList){
         let index =this.allObserverList.map(function(observerList) { return observerList.hostName}).indexOf(hostName)

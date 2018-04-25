@@ -40,7 +40,7 @@ startServer(){
 addHost(){
   let self = this
   app.post('/addHost',function(req,res){
-    let hostList = self.applicationContext.getHostList()
+    let hostList = self.applicationContext.getAllHostList()
     if(req.body.hostName === undefined || req.body.ipAddress === undefined || req.body.selected === undefined)
     res.send('')
     else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)>=0 )
@@ -104,27 +104,10 @@ getContact(){
   app.post('/getContact',function(req,res){
     let contactList  
       let specificContactList = self.applicationContext.getContactList(req.query.hostName)
-      if(specificContactList.length>0)
+      if(specificContactList.length === 0)
+      contactList = []
+      else
       contactList = specificContactList[0].contactList
-      if(contactList !== undefined){
-      for(var i=0 ; i <contactList.length;i++)
-      {
-        for(var j=0 ; j<contactList[i].communicate.length;j++){
-            if(contactList[i].communicate[j].type==='Facebook')
-              contactList[i].facebookAddress =  contactList[i].communicate[j].address
-            if(contactList[i].communicate[j].type==='Telephone')
-              contactList[i].telephoneAddress =  contactList[i].communicate[j].address
-            if(contactList[i].communicate[j].type==='Email')
-              contactList[i].emailAddress =  contactList[i].communicate[j].address
-            if(contactList[i].communicate[j].type==='Skype')
-              contactList[i].skypeAddress =  contactList[i].communicate[j].address
-            if(contactList[i].communicate[j].type==='LineID')
-              contactList[i].lineIDAddress =  contactList[i].communicate[j].address
-            if(j===contactList[i].communicate.length - 1)
-              contactList[i].communicate =[]
-          }
-        }
-      }
       let page = req.query.page
       let per_page = req.query.per_page
       let current_page = 1
@@ -132,8 +115,6 @@ getContact(){
       let prev_page_url = null
       let domain = "http://localhost:3000/todo"
       let vuetableFormat = {}
-      if(contactList === undefined)
-      contactList = []
       if(page){
         current_page = page * 1
       }
@@ -167,21 +148,48 @@ addContact(){
         if(eachHost.hostName  === req.body.hostName)
         host = eachHost
      })
-      host.addContact(req.body,self.applicationContext,function(){
+     for(var i=0 ; i <req.body.communicate.length;i++){
+      if(req.body.communicate[i].type==='Facebook')
+        req.body.facebookAddress =  req.body.communicate[i].address
+      if(req.body.communicate[i].type==='Telephone')
+        req.body.telephoneAddress =  req.body.communicate[i].address
+      if(req.body.communicate[i].type==='Email')
+        req.body.emailAddress =  req.body.communicate[i].address
+      if(req.body.communicate[i].type==='Skype')
+        req.body.skypeAddress =  req.body.communicate[i].address
+      if(req.body.communicate[i].type==='LineID')
+        req.body.lineIDAddress =  req.body.communicate[i].address
+    }
+
+      host.addContact(req.body,function(){
         let observerList =  []
+        let observer
         for(let i =0 ; i < req.body.communicate.length ; i++){
-          if(req.body.communicate[i].type === 'Facebook')
-            observerList.push(new FacebookObserver())
-          if(req.body.communicate[i].type === 'Telephone')
-            observerList.push(new TelephoneObserver())
-          if(req.body.communicate[i].type === 'Email')
-            observerList.push(new EmailObserver())
-          if(req.body.communicate[i].type === 'Skype')
-            observerList.push(new SkypeObserver())
-          if(req.body.communicate[i].type === 'LineID')
-            observerList.push(new LineObserver())
+          if(req.body.communicate[i].type === 'Facebook'){
+              observer = new FacebookObserver()
+              observerList.push(observer)
+            }
+          if(req.body.communicate[i].type === 'Telephone'){
+            observer = new TelephoneObserver()            
+            observerList.push(observer)
+          }
+          if(req.body.communicate[i].type === 'Email'){
+            observer = new EmailObserver()                        
+            observerList.push(observer)            
+          }
+          if(req.body.communicate[i].type === 'Skype'){
+            observer = new SkypeObserver()                                    
+            observerList.push(observer)
+          }
+          if(req.body.communicate[i].type === 'LineID'){
+            observer = new LineObserver()                                                
+            observerList.push(observer)            
+          }
+          host.attach(observer)
         }
-        host.attach(req.body.hostName,self.applicationContext,observerList)
+        delete req.body.communicate 
+        self.applicationContext.addContact(req.body.hostName,req.body)
+        self.applicationContext.addObserver(req.body.hostName,observerList)            
         res.send('Attach Observer Success')
       })
   

@@ -18,8 +18,10 @@ export default class HostManager{
     setEachResponeHost(callback){
         let count = 0
         let self = this
+        let checkHostUseCase = new CheckHostUseCase
+        if(this.applicationContext.getAllHostList().length === 0)
+        callback()
         this.applicationContext.getAllHostList().forEach(function(host){
-            let checkHostUseCase = new CheckHostUseCase
             checkHostUseCase.selectCommand(host,function(hostInfo){
                 count++
                 self.responseL.push(hostInfo)
@@ -27,7 +29,6 @@ export default class HostManager{
                 callback()
             })
         })
-      
     }
     getAllHost(){
           return this.responseL
@@ -46,7 +47,7 @@ export default class HostManager{
     }
     addHost(hostObject,callback){
         var self =this
-        let host = new Host(hostObject.hostName, hostObject.ipAddress, hostObject.selected)
+        let host = new Host(hostObject.hostName, hostObject.ipAddress, hostObject.selected,[],[])
         this.applicationContext.addHost(host,(()=>{
 
         }))

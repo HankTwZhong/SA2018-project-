@@ -17,7 +17,7 @@ export default class CheckHostUseCase{
             for(var i = 0 ; i <responseList.length; i++){
               if(responseList[i].hostName === hostInfo.hostName){
                     if(responseList[i].active !==  hostInfo.active){
-                        hostList[i].notifyAll(responseList[i].hostName,hostInfo.active,hostManage.applicationContext)
+                        hostList[i].notifyAll(hostInfo.active)
                     }
                     responseList[i].active =  hostInfo.active
                     responseList[i].date  = hostInfo.date
