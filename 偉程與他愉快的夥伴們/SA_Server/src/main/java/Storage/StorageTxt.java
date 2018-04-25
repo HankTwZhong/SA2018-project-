@@ -59,7 +59,7 @@ public class StorageTxt implements StorageBuilder {
             sb.append(host.getHostIp()).append(",,");
             sb.append(host.getCheckMethod()).append(",,");
             sb.append("null,,");
-            sb.append("{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":[\"advrrf1548\"]},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":[\"online12345\"]}]}");
+            sb.append("{\"contact\":[{\"name\":\"林翰隆\",\"email\":\"gunchana0713@gmail.com\",\"addressList\":{\"FB\":[\"advrrf1548\"],\"LINE\":[\"aaaa123\"]}},{\"name\":\"賴偉程\",\"email\":\"online1201@gmail.com\",\"addressList\":{\"FB\":[\"online12345\"]}}]}");
             sb.append('\n');
             out.write(sb.toString());
             out.close();
@@ -112,8 +112,9 @@ public class StorageTxt implements StorageBuilder {
             JsonObject jsonObject = new JsonParser().parse(jsonElement.toString()).getAsJsonObject();
             String name = jsonObject.get("name").toString();
             String email = jsonObject.get("email").toString();
-            JsonArray jsonArray = jsonObject.get("addressList").getAsJsonArray();
-            ArrayList<String> contactList = (ArrayList<String>) gson.fromJson(jsonArray,arrayList.getClass());
+            jsonObject = jsonObject.get("addressList").getAsJsonObject();
+            Map<String,ArrayList<String>> contactList = (Map<String,ArrayList<String>>) gson.fromJson(jsonObject,contactListMap.getClass());
+            System.out.println(contactList);
             Contact contact = new Contact(name,email,contactList);
             list.add(contact);
         }

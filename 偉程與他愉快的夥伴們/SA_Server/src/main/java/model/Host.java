@@ -1,8 +1,9 @@
 package model;
 
-import Notify.EmailObserver;
+import Notify.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class Host {
     private String hostName;
@@ -12,9 +13,11 @@ public class Host {
     private int checkMethod;
 
     private ArrayList<Contact> contactArrayList;
+    private ArrayList<IObserver> observerList;
 
     public Host(){
         contactArrayList = new ArrayList<Contact>();
+        observerList = new ArrayList<IObserver>();
     }
 
     public void setHostName(String name){
@@ -58,35 +61,38 @@ public class Host {
 
     public int getCheckMethod() { return this.checkMethod; }
 
-    public void setContact(String contactName,String email, ArrayList<String> contactAddressList){
-        Contact c = new Contact(contactName,email, contactAddressList);
-        contactArrayList.add(c);
-    }
-
     public ArrayList<Contact> getContactList(ArrayList<Contact> list){
         return contactArrayList;
     }
 
     public void setContactList(ArrayList<Contact> list){
         this.contactArrayList  = list;
+        IObserver emailObserver = new EmailObserver();
+        this.regster(emailObserver);
+        IObserver fbObserver = new FBObserver();
+        this.regster(fbObserver);
+        IObserver skObserver = new SkypeObserver();
+        this.regster(skObserver);
     }
 
     public ArrayList<Contact> getContactList(){
         return this.contactArrayList;
     }
 
-    public void printAllContact(){
-        for(int i = 0;i < this.contactArrayList.size();i++){
-            System.out.println("--------------第"+i+"位---------------");
-            System.out.println(this.contactArrayList.get(i).getName());
-            System.out.println(this.contactArrayList.get(i).getEmail());
-            System.out.println(this.contactArrayList.get(i).getMethod());
-            System.out.println(this.contactArrayList.get(i).getAddress());
-        }
+    public void regster(IObserver observer){
+        observerList.add(observer);
+    }
+
+    public void removeObserver(IObserver observer){
+        observerList.remove(observer);
     }
 
     public void notifySubscriber(){
-        IObserver iObserver = new EmailObserver();
-        iObserver.Update(this);
+        if(observerList != null) {
+            for (int i = 0; i < observerList.size(); i++) {
+                observerList.get(i).Update(this);
+            }
+        }
     }
+
 }

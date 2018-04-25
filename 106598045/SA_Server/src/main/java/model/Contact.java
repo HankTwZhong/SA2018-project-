@@ -4,14 +4,15 @@ import Notify.SendingEmail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Contact {
     private String name;
     private String email;
     private String method;
-    private ArrayList<String> addressList;
+    private Map<String,ArrayList<String>> addressList;
 
-    public Contact(final String contactName,final String email, final ArrayList<String> addressList) {
+    public Contact(final String contactName,final String email, final Map<String,ArrayList<String>> addressList) {
         this.name =contactName;
         this.email = email;
         this.addressList = addressList;
@@ -40,12 +41,14 @@ public class Contact {
         this.method = method;
     }
 
-    public ArrayList<String> getAddress() {
+    public Map<String,ArrayList<String>> getAddress() {
         return addressList;
     }
 
-    public void setAddress(String address) {
-        this.addressList.add(address);
+    public void setAddress(String type,String address) {
+        ArrayList<String> arrayList = this.addressList.get(type);
+        arrayList.add(address);
+        this.addressList.put(type,arrayList);
     }
 
 }
