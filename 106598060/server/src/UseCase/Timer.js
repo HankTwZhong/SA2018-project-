@@ -5,11 +5,11 @@ export default class Timer{
     constructor(frequency){
         this.frequency = frequency
     }
-    pingInterval(hostManage){
+    pingInterval(applicationContext){
        let self  = this
        let checkHostUseCase = new CheckHostUseCase()
        let setIntervalId =  setInterval(function() {
-           checkHostUseCase.checkHostStatus(hostManage)
+           checkHostUseCase.checkHostStatus(applicationContext)
         }, this.frequency)
         return setIntervalId
     }

@@ -1,16 +1,17 @@
 import TxtOperator from '../Adapter/TxtOperator'
 import Host from '../Entity/Host'
 import Contact from '../Entity/Contact'
-import FacebookObserver from '../UseCase/FacebookObserver';
-import LineObserver from '../UseCase/LineObserver';
-import EmailObserver from '../UseCase/EmailObserver';
-import SkypeObserver from '../UseCase/SkypeObserver';
-import TelephoneObserver from '../UseCase/TelephoneObserver';
+import FacebookObserver from '../UseCase/Observer/FacebookObserver';
+import LineObserver from '../UseCase/Observer/LineObserver';
+import EmailObserver from '../UseCase/Observer/EmailObserver';
+import SkypeObserver from '../UseCase/Observer/SkypeObserver';
+import TelephoneObserver from '../UseCase/Observer/TelephoneObserver';
 
 let txtOperator = new TxtOperator
 
 export default class ApplicationContext{
     constructor(callback){
+        this.responseList = undefined
         let self = this
         this.readAllObserverList((allObserverList)=>{
             self.allObserverList = allObserverList
@@ -23,6 +24,15 @@ export default class ApplicationContext{
             })
         })
     }
+
+    setResponseList(responseList){
+        this.responseList = responseList
+    }
+
+    getResponseList(){
+        return this.responseList
+    }
+
     readAllhostList(allObserverList,allContactList,callback){
         let hostList = []
         txtOperator.readData('hostList',((allHostList)=>{

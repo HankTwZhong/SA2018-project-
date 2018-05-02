@@ -1,4 +1,4 @@
-import Observer from '../Entity/Observer'
+import Observer from '../../Entity/Observer'
 
 export default class LineObserver extends Observer{
     constructor(){

@@ -1,11 +1,12 @@
-import HostManager from '../UseCase/HostManager'
-import FacebookObserver from '../UseCase/FacebookObserver';
-import LineObserver from '../UseCase/LineObserver';
-import EmailObserver from '../UseCase/EmailObserver';
-import SkypeObserver from '../UseCase/SkypeObserver';
-import TelephoneObserver from '../UseCase/TelephoneObserver';
+import HostUseCase from '../UseCase/HostUseCase'
+import FacebookObserver from '../UseCase/Observer/FacebookObserver';
+import LineObserver from '../UseCase/Observer/LineObserver';
+import EmailObserver from '../UseCase/Observer/EmailObserver';
+import SkypeObserver from '../UseCase/Observer/SkypeObserver';
+import TelephoneObserver from '../UseCase/Observer/TelephoneObserver';
 import Host from '../Entity/Host'
-import ApplicationContext from '../UseCase/ApplicationContext' 
+import ApplicationContext from '../UseCase/ApplicationContext'
+import InitialUseCase from '../UseCase/InitialUseCase'; 
 
 
 var express = require('express')
@@ -21,18 +22,20 @@ app.options('*',cors())
 
 export default class Restful{
   constructor(callback){
-    this.hostManager = undefined
+    this.hostUseCase = undefined
+    this.initialUseCase = undefined
     let self = this
     this.applicationContext = new ApplicationContext(()=>{
-      self.hostManager = new HostManager(this.applicationContext)
+      self.initialUseCase = new InitialUseCase(this.applicationContext)
       callback()
     })
   }
 startServer(){
   var self = this
   app.listen(3000, function () {
-      self.hostManager.setEachResponeHost(function(){
-        setIntervalId=self.hostManager.updateAllHostInterval()
+      self.initialUseCase.initialResponseList(function(){
+      self.hostUseCase = new HostUseCase(self.applicationContext)        
+      setIntervalId=self.initialUseCase.initialTimerFrequency()
       })
     console.log('App listening on port 3000!');
   })
@@ -46,7 +49,7 @@ addHost(){
     else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)>=0 )
     res.send('There has same host')
     else{
-      self.hostManager.addHost(req.body,function(){
+      self.hostUseCase.addHost(req.body,function(){
         res.send('Host: "'+ req.body.hostName + '" was added success')
       })
     }
@@ -56,9 +59,8 @@ deleteHost(){
   let self = this
   app.post('/deleteHost',function(req,res){
     clearInterval(setIntervalId)
-    self.hostManager.deleteHost(req.body.hostName,function(hostName){
-      console.log('hostName' + hostName )
-      setIntervalId=self.hostManager.updateAllHostInterval()
+    self.hostUseCase.deleteHost(req.body.hostName,function(hostName){
+      setIntervalId=self.initialUseCase.initialTimerFrequency()
       res.send('host "'+ hostName +' "has been delete')
       })
   })
@@ -66,7 +68,9 @@ deleteHost(){
 getHostData(){
   let self = this
   app.post('/getHostsData', function (req, res) {
-      var responseList = self.hostManager.getAllHost() 
+      var responseList = self.hostUseCase.getAllHost()
+      if (responseList === undefined)
+        responseList = [] 
       let page = req.query.page
       let per_page = req.query.per_page
       let current_page = 1

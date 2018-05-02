@@ -8,9 +8,9 @@ export default class CheckHostUseCase{
         this.pingCommand = new PingCommand()
         this.isReachableCommand = new IsReachableCommand()  
     }
-    checkHostStatus(hostManage,callback){
-        let responseList= hostManage.getAllHost()
-        let hostList = hostManage.applicationContext.getAllHostList()
+    checkHostStatus(applicationContext,callback){
+        let responseList= applicationContext.getResponseList()
+        let hostList = applicationContext.getAllHostList()
         var self = this
         hostList.forEach(function(host){
             self.selectCommand(host,function(hostInfo){
@@ -25,7 +25,7 @@ export default class CheckHostUseCase{
             }
           })
         })
-        hostManage.setResponseH(responseList)
+        applicationContext.setResponseList(responseList)
     }
     selectCommand(host,callback){
         let self = this
