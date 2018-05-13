@@ -9,6 +9,7 @@
 ```
 npm install
 npm start
+npm test
 ```
 
 [Web-View](https://github.com/tzutseyang/sa_nagios_client)
