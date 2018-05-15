@@ -1,4 +1,3 @@
-import Contact from '../Entity/Contact'
 export default class Host{
     constructor(hostName,ipAddress,selected,contactList,observerList){
         this.hostName  =  hostName
@@ -32,8 +31,7 @@ export default class Host{
                 console.log('Email : '+ contact.emailAddress)
         })
     }
-    addContact(contact,callback){
-        let contactObject  = new Contact(contact.contactName,contact.facebookAddress,contact.lineIDAddress,contact.skypeAddress,contact.telephoneAddress,contact.emailAddress)
+    addContact(contactObject, callback){
         this.contactList.push(contactObject)
         callback()
     }

@@ -1,13 +1,12 @@
 import HostUseCase from '../UseCase/HostUseCase'
-import FacebookObserver from '../UseCase/Observer/FacebookObserver';
-import LineObserver from '../UseCase/Observer/LineObserver';
-import EmailObserver from '../UseCase/Observer/EmailObserver';
-import SkypeObserver from '../UseCase/Observer/SkypeObserver';
-import TelephoneObserver from '../UseCase/Observer/TelephoneObserver';
 import Host from '../Entity/Host'
 import ApplicationContext from '../UseCase/ApplicationContext'
 import InitialUseCase from '../UseCase/InitialUseCase'; 
-
+import HostInputDTO from '../UseCase/HostInputDTO'
+import HostViewModel from '../Controller/HostViewModel'
+import ContactViewModel from '../Controller/ContactViewModel'
+import ContactUseCase from '../UseCase/ContactUseCase'
+import ContactInputDTO from '../UseCase/ContactInputDTO';
 
 var express = require('express')
 var app = express()
@@ -49,7 +48,8 @@ addHost(){
     else if(hostList.map(function(e) { return e.hostName}).indexOf(req.body.hostName)>=0 )
     res.send('There has same host')
     else{
-      self.hostUseCase.addHost(req.body,function(){
+      let hostInputDTO = new HostInputDTO(req.body.hostName,req.body.ipAddress, req.body.selected)
+      self.hostUseCase.addHost(hostInputDTO,function(){
         res.send('Host: "'+ req.body.hostName + '" was added success')
       })
     }
@@ -68,44 +68,16 @@ deleteHost(){
 getHostData(){
   let self = this
   app.post('/getHostsData', function (req, res) {
-      var responseList = self.hostUseCase.getAllHost()
-      if (responseList === undefined)
-        responseList = [] 
-      let page = req.query.page
-      let per_page = req.query.per_page
-      let current_page = 1
-      let last_page = 1
-      let prev_page_url = null
-      let domain = "http://localhost:3000/getHostsData"
-      let vuetableFormat = {}
-      if(page){
-        current_page = page * 1
-      }
-        if(responseList.length % 10 === 0 && responseList.length !== 0){
-          last_page = responseList.length / 10
-        }
-        else{
-            last_page = Math.round(responseList.length / 10) + 1
-        }                               
-        if(current_page > 1){
-            prev_page_url = domain + '&sort=&page=' + (current_page - 1) +'&per_page=' + per_page
-        }             
-        vuetableFormat.total = responseList.length
-        vuetableFormat.per_page = per_page
-        vuetableFormat.current_page = current_page
-        vuetableFormat.last_page = last_page
-        vuetableFormat.next_page_url = domain + '&sort=&page=' + (current_page + 1) +'&per_page=' + per_page
-        vuetableFormat.prev_page_url = prev_page_url
-        vuetableFormat.from = 1 + 10 * (current_page - 1)
-        vuetableFormat.to = 10 * current_page
-        vuetableFormat.data = responseList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
-        res.json(vuetableFormat)
-  
+      var hostOutputDTO = self.hostUseCase.getAllHost()
+      let hostViewModel = new HostViewModel(hostOutputDTO.getResponseList())
+      let vuetableFormat = hostViewModel.hostDataForVueTable(req)
+      res.json(vuetableFormat)
   })
 }
 getContact(){
   let self = this
   app.post('/getContact',function(req,res){
+    // let contactViewModel = new ContactViewModel()
     let contactList  
       let specificContactList = self.applicationContext.getContactList(req.query.hostName)
       if(specificContactList.length === 0)
@@ -146,12 +118,7 @@ getContact(){
 addContact(){
   let self = this
     app.post('/addContact',function(req,res){
-     let hostList = self.applicationContext.getAllHostList()
-     let host
-     hostList.forEach((eachHost)=>{
-        if(eachHost.hostName  === req.body.hostName)
-        host = eachHost
-     })
+     let contactUseCase = new ContactUseCase(self.applicationContext)
      for(var i=0 ; i <req.body.communicate.length;i++){
       if(req.body.communicate[i].type==='Facebook')
         req.body.facebookAddress =  req.body.communicate[i].address
@@ -164,41 +131,11 @@ addContact(){
       if(req.body.communicate[i].type==='LineID')
         req.body.lineIDAddress =  req.body.communicate[i].address
     }
-
-      host.addContact(req.body,function(){
-        let observerList =  []
-        let observer
-        for(let i =0 ; i < req.body.communicate.length ; i++){
-          if(req.body.communicate[i].type === 'Facebook'){
-              observer = new FacebookObserver()
-              observerList.push(observer)
-            }
-          if(req.body.communicate[i].type === 'Telephone'){
-            observer = new TelephoneObserver()            
-            observerList.push(observer)
-          }
-          if(req.body.communicate[i].type === 'Email'){
-            observer = new EmailObserver()                        
-            observerList.push(observer)            
-          }
-          if(req.body.communicate[i].type === 'Skype'){
-            observer = new SkypeObserver()                                    
-            observerList.push(observer)
-          }
-          if(req.body.communicate[i].type === 'LineID'){
-            observer = new LineObserver()                                                
-            observerList.push(observer)            
-          }
-          host.attach(observer)
-        }
-        delete req.body.communicate 
-        self.applicationContext.addContact(req.body.hostName,req.body)
-        self.applicationContext.addObserver(req.body.hostName,observerList)            
-        res.send('Attach Observer Success')
-      })
-  
-    }
-  )
+    let contactInputDTO  = new ContactInputDTO(req.body.contactName,req.body.facebookAddress,req.body.lineIDAddress,req.body.skypeAddress,req.body.telephoneAddress,req.body.emailAddress)
+    contactUseCase.addContact(req.body.hostName, contactInputDTO, function(){
+      res.send('Attach Observer Success')
+    })
+  })
 }
 
 }
