@@ -9,22 +9,14 @@ import java.util.Calendar;
 import java.util.TimerTask;
 
 public class Montioring extends TimerTask{
-    private ArrayList<Host> hostList;
-    private int initalTimer;
-    public Montioring(ArrayList<Host> hostList){
-        this.hostList = hostList;
-        Calendar timer = Calendar.getInstance();
-        this.initalTimer = timer.get(Calendar.SECOND);
+    private Host host;
+    private CheckHostUseCase checkHostUseCase;
+    public Montioring(Host h){
+        this.host = h;
+        this.checkHostUseCase = new CheckHostUseCase();
     }
     @Override
     public void run() {
-        Calendar timerNow = Calendar.getInstance();
-        CheckHostUseCase checkHostUseCase = new CheckHostUseCase();
-        int Timer = initalTimer - timerNow.get(Calendar.SECOND) + 60;
-        for(Integer i=0 ; i<hostList.size() ; i++){
-            if(Timer % hostList.get(i).getCheckInterval()==0){
-                checkHostUseCase.run(hostList.get(i));
-            }
-        }
+        checkHostUseCase.run(host);
     }
 }

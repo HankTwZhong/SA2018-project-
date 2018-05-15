@@ -10,8 +10,10 @@ import java.util.TimerTask;
 
 public class MonitoringUseCase {
     public void run(ArrayList<Host> hostList){
-        Timer timer = new Timer();
-        TimerTask Monitor = new Montioring(hostList);
-        timer.schedule(Monitor, 1000, 1000);
+        for(Host host : hostList) {
+            Timer timer = new Timer();
+            TimerTask Monitor = new Montioring(host);
+            timer.schedule(Monitor, 1000, host.getCheckInterval());
+        }
     }
 }
