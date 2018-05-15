@@ -13,7 +13,7 @@ public class MonitoringUseCase {
         for(Host host : hostList) {
             Timer timer = new Timer();
             TimerTask Monitor = new Montioring(host);
-            timer.schedule(Monitor, 1000, host.getCheckInterval());
+            timer.schedule(Monitor, 1000, host.getCheckInterval()*1000);
         }
     }
 }
