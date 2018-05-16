@@ -2,13 +2,15 @@ package ntut.sa2018.Domain.Host;
 
 import ntut.sa2018.Domain.Contact.Contact;
 
+import java.util.ArrayList;
+
 public class HostBuilder {
     public static class newInstance{
         public String hostName;
         public String hostIP;
         public String checkMethod;
         public int checkInterval;
-        public Contact contact;
+        public ArrayList<Contact> contact;
 
         public newInstance name(String hostName){
             this.hostName = hostName;
@@ -30,7 +32,7 @@ public class HostBuilder {
             return(this);
         }
 
-        public newInstance contact(Contact con){
+        public newInstance contact(ArrayList<Contact> con){
             this.contact = con;
             return(this);
         }

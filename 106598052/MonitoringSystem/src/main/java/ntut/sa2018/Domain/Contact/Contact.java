@@ -62,21 +62,21 @@ public class Contact extends Subscriber{
 
     @Override
     public void update(Publisher p) {
-        System.out.println("Email = " + email + p.getInfo() + " the host has change status");
-        if(lineaddress!="null"){
-            System.out.println("Line address = " + lineaddress + p.getInfo() + " the host has change status");
+        System.out.println("Email = " + email + ", " + p.getInfo() + " the host has change status");
+        if(!lineaddress.equals("null")){
+            System.out.println("Line address = " + lineaddress + ", " + p.getInfo() + " the host has change status");
         }
-        if(facebookaddress!="null"){
-            System.out.println("Facebook address = " + facebookaddress + p.getInfo() + " the host has change status");
+        if(!facebookaddress.equals("null")){
+            System.out.println("Facebook address = " + facebookaddress + ", " + p.getInfo() + " the host has change status");
         }
-        if(skypeaddress!="null"){
-            System.out.println("Skype address = " + skypeaddress + p.getInfo() + " the host has change status");
+        if(!skypeaddress.equals("null")){
+            System.out.println("Skype address = " + skypeaddress + ", " + p.getInfo() + " the host has change status");
         }
-        if(otheraddress!="null"){
-            System.out.println("Other address = " + otheraddress + p.getInfo() + " the host has change status");
+        if(!otheraddress.equals("null")){
+            System.out.println("Other address = " + otheraddress + ", " + p.getInfo() + " the host has change status");
         }
-        if(otheraddress2!="null"){
-            System.out.println("Other address 2 = " + otheraddress2 + p.getInfo() + " the host has change status");
+        if(!otheraddress2.equals("null")){
+            System.out.println("Other address 2 = " + otheraddress2 + ", " + p.getInfo() + " the host has change status");
         }
     }
 }

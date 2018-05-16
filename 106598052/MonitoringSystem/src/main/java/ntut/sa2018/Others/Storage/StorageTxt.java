@@ -28,21 +28,29 @@ public class StorageTxt implements StorageInterface {
             String line = "";
             while ((line = br.readLine()) != null) {
                 String[] row = line.split(" ");
-                Contact contact = new ContactBuilder.newInstance().
-                        contactName(row[4]).
-                        email(row[5]).
-                        line(row[6]).
-                        facebook(row[7]).
-                        skype(row[8]).
-                        otheraddress(row[9]).
-                        otheraddress2(row[10]).
-                        build();
+                int count = row.length;
+                int i = 4 ;
+                ArrayList<Contact> contactArrayList = new ArrayList<>();
+                while(count>1){
+                    Contact contact = new ContactBuilder.newInstance().
+                            contactName(row[i]).
+                            email(row[i+1]).
+                            line(row[i+2]).
+                            facebook(row[i+3]).
+                            skype(row[i+4]).
+                            otheraddress(row[i+5]).
+                            otheraddress2(row[i+6]).
+                            build();
+                    contactArrayList.add(contact);
+                    count = count - 10;
+                    i = i + 7;
+                }
                 Host host = new HostBuilder.newInstance().
                         name(row[0]).
                         address(row[1]).
                         checkCommand(row[2]).
                         checkInterval(Integer.parseInt(row[3])).
-                        contact(contact).
+                        contact(contactArrayList).
                         build();
                 list.add(host);
             }
@@ -65,13 +73,15 @@ public class StorageTxt implements StorageInterface {
             sb.append(host.getHostIP()).append(" ");
             sb.append(host.getCheckMethod()).append(" ");
             sb.append(host.getCheckInterval()).append(" ");
-            sb.append(host.getContact().getContactName()).append(" ");
-            sb.append(host.getContact().getEmail()).append(" ");
-            sb.append(host.getContact().getLineaddress()).append(" ");
-            sb.append(host.getContact().getFacebookaddress()).append(" ");
-            sb.append(host.getContact().getSkypeaddress()).append(" ");
-            sb.append(host.getContact().getOtheraddress()).append(" ");
-            sb.append(host.getContact().getOtheraddress2());
+            for(Integer i=0 ; i<host.getContact().size() ; i++){
+                sb.append(host.getContact().get(i).getContactName()).append(" ");
+                sb.append(host.getContact().get(i).getEmail()).append(" ");
+                sb.append(host.getContact().get(i).getLineaddress()).append(" ");
+                sb.append(host.getContact().get(i).getFacebookaddress()).append(" ");
+                sb.append(host.getContact().get(i).getSkypeaddress()).append(" ");
+                sb.append(host.getContact().get(i).getOtheraddress()).append(" ");
+                sb.append(host.getContact().get(i).getOtheraddress2()).append(" ");
+            }
             sb.append('\n');
             out.write(sb.toString());
             out.close();

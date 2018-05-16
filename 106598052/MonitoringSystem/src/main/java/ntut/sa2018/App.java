@@ -1,13 +1,10 @@
 package ntut.sa2018;
 
-import ntut.sa2018.DTO.HostOutputDTO;
 import ntut.sa2018.Domain.Contact.Contact;
 import ntut.sa2018.Domain.Contact.ContactBuilder;
 import ntut.sa2018.Domain.Host.Host;
 import ntut.sa2018.Domain.Host.HostBuilder;
-import ntut.sa2018.Others.ClientRequireHandler.CilentRequireHandler;
-import ntut.sa2018.Others.Interface.StorageInterface;
-import ntut.sa2018.Others.Storage.StorageDirector;
+import ntut.sa2018.Others.ClientRequireHandler.ClientRequireHandler;
 import ntut.sa2018.UseCase.*;
 
 import java.io.BufferedReader;
@@ -21,11 +18,10 @@ import java.util.ArrayList;
  * Hello world!
  *
  */
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main( String[] args ) {
         System.out.println( "Hello World!" );
+        ArrayList<DataOutputStream> clientOutputStreams = new ArrayList<DataOutputStream>();
 
         /*get host list use case
         GetHostListUseCase getHostUseCase = new GetHostListUseCase();
@@ -35,7 +31,7 @@ public class App
         AddHostUseCase addHostUseCase = new AddHostUseCase();
         addHostUseCase.run("Local","140.124.181.15","ping",5);*/
 
-        /*get host use case
+        /*monitoring host use case
         GetHostListUseCase getHostUseCase = new GetHostListUseCase();
         ArrayList<Host> hostList = getHostUseCase.run();
         CheckHostUseCase checkHostUseCase = new CheckHostUseCase();
@@ -59,15 +55,17 @@ public class App
         GetHostListUseCase getHostUseCase = new GetHostListUseCase();
         ArrayList<Host> hostList = getHostUseCase.run();*/
 
-        /*add notify*/
+        /*add notify
+        GetHostListUseCase getHostUseCase = new GetHostListUseCase();
+        ArrayList<Host> hostList = getHostUseCase.run();
+        AddObserverUseCase addObserverUseCase = new AddObserverUseCase();
+        addObserverUseCase.run(hostList);*/
 
+        /*setting socket and monitoring*/
         MonitoringUseCase monitoringUseCase = new MonitoringUseCase();
-        StorageInterface hostRepository = StorageDirector.StorageBuild();
-        ArrayList<Host> hostList = hostRepository.getHost();
-        monitoringUseCase.run(hostList);
+        monitoringUseCase.run();
 
-        ArrayList<DataOutputStream> clientOutputStreams = new ArrayList<DataOutputStream>();
-        try{
+        try {
             BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
             int port = 5050;
             ServerSocket serverSocket = new ServerSocket(port);//開始監聽port連線請求。
@@ -78,7 +76,7 @@ public class App
                     try {
                         DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
                         clientOutputStreams.add(dos);
-                        Thread thread = new Thread(threadGroup,new CilentRequireHandler(clientSocket, clientOutputStreams));
+                        Thread thread = new Thread(threadGroup,new ClientRequireHandler(clientSocket, clientOutputStreams, monitoringUseCase));
                         thread.start();
                         System.out.println("目前共:"+threadGroup.activeCount()+"個請求");
                     } catch (Exception e) {
@@ -86,14 +84,8 @@ public class App
                     }
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             System.out.println(e.toString());
         }
-
-
-
-
-
-
     }
 }

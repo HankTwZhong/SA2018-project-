@@ -1,6 +1,5 @@
 package ntut.sa2018.Others.MontioringHost;
 
-import com.google.gson.Gson;
 import ntut.sa2018.Domain.Host.Host;
 import ntut.sa2018.UseCase.CheckHostUseCase;
 
@@ -10,16 +9,22 @@ import java.util.Calendar;
 import java.util.TimerTask;
 
 public class Montioring extends TimerTask{
-    private Host host;
-    private CheckHostUseCase checkHostUseCase;
-    public Montioring(Host h){
-        this.host = h;
-        this.checkHostUseCase = new CheckHostUseCase();
+    private ArrayList<Host> hostList;
+    private int initalTimer;
+    public Montioring(ArrayList<Host> hostList){
+        this.hostList = hostList;
+        Calendar timer = Calendar.getInstance();
+        this.initalTimer = timer.get(Calendar.SECOND);
     }
     @Override
     public void run() {
-        checkHostUseCase.run(host);
+        Calendar timerNow = Calendar.getInstance();
+        CheckHostUseCase checkHostUseCase = new CheckHostUseCase();
+        int Timer = initalTimer - timerNow.get(Calendar.SECOND) + 60;
+        for(Integer i=0 ; i<hostList.size() ; i++){
+            if(Timer % hostList.get(i).getCheckInterval()==0){
+                checkHostUseCase.run(hostList.get(i));
+            }
+        }
     }
-
-
 }

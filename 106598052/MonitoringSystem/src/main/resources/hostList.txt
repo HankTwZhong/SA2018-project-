@@ -1,2 +1,1 @@
-Local 140.124.181.15 Reachable 5 賴偉程 test@ntut.edu.tw null null null null null
-翰隆 140.124.181.10 Reachable 3 賴偉程 test@ntut.edu.tw null null null null null
+zente zenmate.com Reachable 2

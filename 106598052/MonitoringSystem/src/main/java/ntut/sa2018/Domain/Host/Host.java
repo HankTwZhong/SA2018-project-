@@ -3,6 +3,8 @@ package ntut.sa2018.Domain.Host;
 import ntut.sa2018.Domain.Contact.Contact;
 import ntut.sa2018.Others.Publisher;
 
+import java.util.ArrayList;
+
 
 public class Host extends Publisher {
     private String hostName;
@@ -10,7 +12,7 @@ public class Host extends Publisher {
     private String hostStatus;
     private String checkMethod;
     private int checkInterval;
-    private Contact contact;
+    private ArrayList<Contact> contact;
     private String lastCheck;
 
     public Host(HostBuilder.newInstance newInstance){
@@ -69,14 +71,16 @@ public class Host extends Publisher {
         System.out.println("hostIP = " + hostIP);
         System.out.println("checkMethod = " + checkMethod);
         System.out.println("checkInterval = " + checkInterval);
-        contact.printContact();
+        for(Integer i=0 ; i<contact.size() ; i++){
+            contact.get(i).printContact();
+        }
     }
 
-    public Contact getContact() {
+    public ArrayList<Contact> getContact() {
         return contact;
     }
 
-    public void setContact(Contact contact){
+    public void setContact(ArrayList<Contact> contact){
         this.contact = contact;
     }
 
