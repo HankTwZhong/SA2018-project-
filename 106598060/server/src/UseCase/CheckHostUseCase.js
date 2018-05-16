@@ -1,7 +1,7 @@
 
 import moment from 'moment'
-import PingCommand from './PingCommand'
-import IsReachableCommand from './IsReachableCommand';
+import PingCommand from '../PingCommand'
+import IsReachableCommand from '../IsReachableCommand';
 
 export default class CheckHostUseCase{
     constructor(){

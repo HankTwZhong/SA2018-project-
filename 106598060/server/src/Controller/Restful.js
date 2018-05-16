@@ -23,6 +23,7 @@ export default class Restful{
   constructor(callback){
     this.hostUseCase = undefined
     this.initialUseCase = undefined
+    this.contactUseCase = undefined
     let self = this
     this.applicationContext = new ApplicationContext(()=>{
       self.initialUseCase = new InitialUseCase(this.applicationContext)
@@ -33,7 +34,8 @@ startServer(){
   var self = this
   app.listen(3000, function () {
       self.initialUseCase.initialResponseList(function(){
-      self.hostUseCase = new HostUseCase(self.applicationContext)        
+      self.hostUseCase = new HostUseCase(self.applicationContext)    
+      self.contactUseCase = new ContactUseCase(self.applicationContext)          
       setIntervalId=self.initialUseCase.initialTimerFrequency()
       })
     console.log('App listening on port 3000!');
@@ -68,7 +70,7 @@ deleteHost(){
 getHostData(){
   let self = this
   app.post('/getHostsData', function (req, res) {
-      var hostOutputDTO = self.hostUseCase.getAllHost()
+      let hostOutputDTO = self.hostUseCase.getAllHost()
       let hostViewModel = new HostViewModel(hostOutputDTO.getResponseList())
       let vuetableFormat = hostViewModel.hostDataForVueTable(req)
       res.json(vuetableFormat)
@@ -77,48 +79,17 @@ getHostData(){
 getContact(){
   let self = this
   app.post('/getContact',function(req,res){
-    // let contactViewModel = new ContactViewModel()
     let contactList  
-      let specificContactList = self.applicationContext.getContactList(req.query.hostName)
-      if(specificContactList.length === 0)
-      contactList = []
-      else
-      contactList = specificContactList[0].contactList
-      let page = req.query.page
-      let per_page = req.query.per_page
-      let current_page = 1
-      let last_page = 1
-      let prev_page_url = null
-      let domain = "http://localhost:3000/todo"
-      let vuetableFormat = {}
-      if(page){
-        current_page = page * 1
-      }
-        if(contactList.length % 10 === 0 &&contactList.length !== 0){
-          last_page =contactList.length / 10
-        }
-        else{
-            last_page = Math.round(contactList.length / 10) + 1
-        }                               
-        if(current_page > 1){
-            prev_page_url = domain + '&sort=&page=' + (current_page - 1) +'&per_page=' + per_page
-        }             
-        vuetableFormat.total =contactList.length
-        vuetableFormat.per_page = per_page
-        vuetableFormat.current_page = current_page
-        vuetableFormat.last_page = last_page
-        vuetableFormat.next_page_url = domain + '&sort=&page=' + (current_page + 1) +'&per_page=' + per_page
-        vuetableFormat.prev_page_url = prev_page_url
-        vuetableFormat.from = 1 + 10 * (current_page - 1)
-        vuetableFormat.to = 10 * current_page
-        vuetableFormat.data =contactList.slice(vuetableFormat.from - 1 , vuetableFormat.to)
+      let contactOutputDTO = self.contactUseCase.getContactList(req.query.hostName)
+      let contactViewModel = new ContactViewModel(contactOutputDTO.getContactList())
+      contactViewModel.contactDataForVueTable(req,function(vuetableFormat){
         res.json(vuetableFormat)
+      })
   })
 }
 addContact(){
   let self = this
     app.post('/addContact',function(req,res){
-     let contactUseCase = new ContactUseCase(self.applicationContext)
      for(var i=0 ; i <req.body.communicate.length;i++){
       if(req.body.communicate[i].type==='Facebook')
         req.body.facebookAddress =  req.body.communicate[i].address
@@ -132,7 +103,7 @@ addContact(){
         req.body.lineIDAddress =  req.body.communicate[i].address
     }
     let contactInputDTO  = new ContactInputDTO(req.body.contactName,req.body.facebookAddress,req.body.lineIDAddress,req.body.skypeAddress,req.body.telephoneAddress,req.body.emailAddress)
-    contactUseCase.addContact(req.body.hostName, contactInputDTO, function(){
+    self.contactUseCase.addContact(req.body.hostName, contactInputDTO, function(){
       res.send('Attach Observer Success')
     })
   })

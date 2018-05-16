@@ -1,5 +1,5 @@
 import fs from 'fs'
-import FileOperator from '../UseCase/FileOperator'
+import FileOperator from './UseCase/FileOperator'
 export default class TxtOperator extends FileOperator{
     saveData(fileName,hostList){
         let content = JSON.stringify(hostList)

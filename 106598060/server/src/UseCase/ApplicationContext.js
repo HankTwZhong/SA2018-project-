@@ -1,4 +1,4 @@
-import TxtOperator from '../Adapter/TxtOperator'
+import TxtOperator from '../TxtOperator'
 import Host from '../Entity/Host'
 import Contact from '../Entity/Contact'
 import FacebookObserver from '../UseCase/Observer/FacebookObserver';
@@ -6,6 +6,7 @@ import LineObserver from '../UseCase/Observer/LineObserver';
 import EmailObserver from '../UseCase/Observer/EmailObserver';
 import SkypeObserver from '../UseCase/Observer/SkypeObserver';
 import TelephoneObserver from '../UseCase/Observer/TelephoneObserver';
+
 
 let txtOperator = new TxtOperator
 
@@ -91,10 +92,11 @@ export default class ApplicationContext{
     getAllContactList(){
         return this.allContactList
     }
-    getContactList(hostName,callback){
+    getContactList(hostName){
         return this.allContactList.filter((contactList)=>{
             return contactList.hostName === hostName
         })
+        
     }
     getObserverList(hostName,callback){
         return this.allObserverList.filter((observerList)=>{
@@ -127,16 +129,15 @@ export default class ApplicationContext{
         txtOperator.saveData('hostList',this.allHostList)          
         callback(this.allHostList)
     }
-    addContact(hostName,contactObject){
-        delete contactObject.hostName
+    addContact(hostName,contactInputDTO){
         let index =this.allContactList.map(function(contactList) { return contactList.hostName}).indexOf(hostName)
         if(index === -1)
         this.allContactList.push({
             hostName:hostName,
-            contactList:[contactObject]
+            contactList:[contactInputDTO]
         })
         else
-        this.allContactList[index].contactList.push(contactObject)
+        this.allContactList[index].contactList.push(contactInputDTO)
         txtOperator.saveData('contactList',this.allContactList) 
     }
     addObserver(hostName,observerList){

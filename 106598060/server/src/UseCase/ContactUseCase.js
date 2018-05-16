@@ -4,6 +4,7 @@ import EmailObserver from '../UseCase/Observer/EmailObserver';
 import SkypeObserver from '../UseCase/Observer/SkypeObserver';
 import TelephoneObserver from '../UseCase/Observer/TelephoneObserver';
 import Contact from '../Entity/Contact'
+import ContactOutputDTO from '../UseCase/ContactOutputDTO'
 
 export default class ContactUseCase{
     constructor(applicationContext){
@@ -56,5 +57,9 @@ export default class ContactUseCase{
         self.applicationContext.addContact(hostName,contactObject)          
         callback()          
       })
+    }
+
+    getContactList(hostName){
+        return new ContactOutputDTO(this.applicationContext.getContactList(hostName))
     }
 }
