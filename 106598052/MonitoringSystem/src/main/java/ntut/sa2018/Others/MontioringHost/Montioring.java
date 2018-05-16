@@ -1,5 +1,6 @@
 package ntut.sa2018.Others.MontioringHost;
 
+import com.google.gson.Gson;
 import ntut.sa2018.Domain.Host.Host;
 import ntut.sa2018.UseCase.CheckHostUseCase;
 
@@ -19,4 +20,6 @@ public class Montioring extends TimerTask{
     public void run() {
         checkHostUseCase.run(host);
     }
+
+
 }

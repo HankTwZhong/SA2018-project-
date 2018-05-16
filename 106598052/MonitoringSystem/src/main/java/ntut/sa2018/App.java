@@ -1,5 +1,6 @@
 package ntut.sa2018;
 
+import ntut.sa2018.DTO.HostOutputDTO;
 import ntut.sa2018.Domain.Contact.Contact;
 import ntut.sa2018.Domain.Contact.ContactBuilder;
 import ntut.sa2018.Domain.Host.Host;
@@ -57,11 +58,14 @@ public class App
 
         /*add notify*/
         GetHostListUseCase getHostUseCase = new GetHostListUseCase();
-        ArrayList<Host> hostList = getHostUseCase.run();
-        AddObserverUseCase addObserverUseCase = new AddObserverUseCase();
-        addObserverUseCase.run(hostList);
-        MonitoringUseCase monitoringUseCase = new MonitoringUseCase();
-        monitoringUseCase.run(hostList);
+        ArrayList<HostOutputDTO> hostList = getHostUseCase.run();
+//        AddObserverUseCase addObserverUseCase = new AddObserverUseCase();
+//        addObserverUseCase.run(hostList);
+//        MonitoringUseCase monitoringUseCase = new MonitoringUseCase();
+//        monitoringUseCase.run(hostList);
+
+
+
 
     }
 }
