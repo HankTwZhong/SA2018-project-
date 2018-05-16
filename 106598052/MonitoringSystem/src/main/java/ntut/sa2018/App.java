@@ -5,6 +5,9 @@ import ntut.sa2018.Domain.Contact.Contact;
 import ntut.sa2018.Domain.Contact.ContactBuilder;
 import ntut.sa2018.Domain.Host.Host;
 import ntut.sa2018.Domain.Host.HostBuilder;
+import ntut.sa2018.Others.ClientRequireHandler.CilentRequireHandler;
+import ntut.sa2018.Others.Interface.StorageInterface;
+import ntut.sa2018.Others.Storage.StorageDirector;
 import ntut.sa2018.UseCase.*;
 
 import java.io.BufferedReader;
@@ -57,12 +60,37 @@ public class App
         ArrayList<Host> hostList = getHostUseCase.run();*/
 
         /*add notify*/
-        GetHostListUseCase getHostUseCase = new GetHostListUseCase();
-        ArrayList<HostOutputDTO> hostList = getHostUseCase.run();
-//        AddObserverUseCase addObserverUseCase = new AddObserverUseCase();
-//        addObserverUseCase.run(hostList);
-//        MonitoringUseCase monitoringUseCase = new MonitoringUseCase();
-//        monitoringUseCase.run(hostList);
+
+        MonitoringUseCase monitoringUseCase = new MonitoringUseCase();
+        StorageInterface hostRepository = StorageDirector.StorageBuild();
+        ArrayList<Host> hostList = hostRepository.getHost();
+        monitoringUseCase.run(hostList);
+
+        ArrayList<DataOutputStream> clientOutputStreams = new ArrayList<DataOutputStream>();
+        try{
+            BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+            int port = 5050;
+            ServerSocket serverSocket = new ServerSocket(port);//開始監聽port連線請求。
+            ThreadGroup threadGroup = new ThreadGroup("clientRequirement");
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                if(clientSocket.isConnected()) {
+                    try {
+                        DataOutputStream dos = new DataOutputStream(clientSocket.getOutputStream());
+                        clientOutputStreams.add(dos);
+                        Thread thread = new Thread(threadGroup,new CilentRequireHandler(clientSocket, clientOutputStreams));
+                        thread.start();
+                        System.out.println("目前共:"+threadGroup.activeCount()+"個請求");
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                    }
+                }
+            }
+        }catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+
 
 
 

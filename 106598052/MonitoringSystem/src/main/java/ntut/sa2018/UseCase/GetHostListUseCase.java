@@ -15,7 +15,9 @@ public class GetHostListUseCase {
         StorageInterface hostRepository = StorageDirector.StorageBuild();
         //use the storage way to get the host list
         ArrayList<Host> hostList = hostRepository.getHost();
-        ArrayList<HostOutputDTO> hostOutputDTOArrayList =new ArrayList<>();
+        System.out.print(hostList.get(0).getHostStatus());
+        System.out.print(hostList.get(0).getLastCheck());
+        ArrayList<HostOutputDTO> hostOutputDTOArrayList =new ArrayList<HostOutputDTO>();
         for(int i=0;i<hostList.size();i++){
             HostOutputDTO hostOutputDTO =new HostOutputDTO();
             hostOutputDTO.hostName=hostList.get(i).getHostName();
@@ -32,11 +34,7 @@ public class GetHostListUseCase {
         return hostOutputDTOArrayList;
     }
 
-    public String getHostListJson(ArrayList<HostOutputDTO> hostList){
-        Gson gson = new Gson();
-        String json = gson.toJson(hostList);
-        return json;
-    }
+
 
 
 

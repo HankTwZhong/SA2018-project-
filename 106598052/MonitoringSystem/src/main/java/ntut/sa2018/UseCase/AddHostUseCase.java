@@ -35,7 +35,7 @@ public class AddHostUseCase {
         }
         catch (Exception ex){
             System.out.println("add host fails, result = " + ex.toString());
-            result = "{ \"result\" : true }" ;
+            result = "{ \"result\" : false }" ;
         }
         return result;
     }

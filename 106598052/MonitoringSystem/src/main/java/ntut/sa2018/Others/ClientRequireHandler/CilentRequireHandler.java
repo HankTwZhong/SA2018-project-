@@ -2,6 +2,7 @@ package ntut.sa2018.Others.ClientRequireHandler;
 
 import ntut.sa2018.DTO.HostInputDTO;
 import com.google.gson.Gson;
+import ntut.sa2018.DTO.HostOutputDTO;
 import ntut.sa2018.UseCase.AddHostUseCase;
 import ntut.sa2018.UseCase.DeleteHostUseCase;
 import ntut.sa2018.UseCase.GetHostListUseCase;
@@ -40,23 +41,17 @@ public class CilentRequireHandler implements Runnable{
                 String response ="";
                 System.out.println("clientMsg : " + clientMsg);
                 String action = clientMsg.get("action");
-                HostInputDTO hostInputDTO =new HostInputDTO();
-                hostInputDTO.hostIp=clientMsg.get("hostIp");
-                hostInputDTO.hostName=clientMsg.get("hostName");
-                hostInputDTO.status=clientMsg.get("status");
-                hostInputDTO.lastCheck=clientMsg.get("lastCheck");
-                hostInputDTO.checkMethod=clientMsg.get("checkMethod");
-                hostInputDTO.checkInterval=Integer.parseInt(clientMsg.get("checkInterval"));
-
 
                 if(action.equals("monitor")){
                     GetHostListUseCase getHostListUseCase=new GetHostListUseCase();
-                    response =  "{ \"result\" : "+getHostListUseCase.getHostListJson(getHostListUseCase.run())+" }";
+                    response =  "{ \"result\" : "+getHostListJson(getHostListUseCase.run())+" }";
                 }else if(action.equals("create")){
+                    HostInputDTO hostInputDTO=setHostInputDTO(clientMsg);
                     AddHostUseCase addHostUseCase=new AddHostUseCase();
                     response=addHostUseCase.run(hostInputDTO);
 
                 }else if(action.equals("delete")){
+                    HostInputDTO hostInputDTO=setHostInputDTO(clientMsg);
                     DeleteHostUseCase deleteHostUseCase=new DeleteHostUseCase();
                     response=deleteHostUseCase.run(hostInputDTO);
                 }
@@ -79,4 +74,23 @@ public class CilentRequireHandler implements Runnable{
             clientOutputStreams.remove(writer);
         }
     }
+
+    public String getHostListJson(ArrayList<HostOutputDTO> hostList){
+        Gson gson = new Gson();
+        String json = gson.toJson(hostList);
+        return json;
+    }
+
+    public HostInputDTO setHostInputDTO(Map<String,String> clientMsg){
+        HostInputDTO hostInputDTO =new HostInputDTO();
+        hostInputDTO.hostIp=clientMsg.get("hostIp");
+        hostInputDTO.hostName=clientMsg.get("hostName");
+        hostInputDTO.status=clientMsg.get("status");
+        hostInputDTO.lastCheck=clientMsg.get("lastCheck");
+        hostInputDTO.checkMethod=clientMsg.get("checkMethod");
+        hostInputDTO.checkInterval=Integer.parseInt(clientMsg.get("checkInterval"));
+        return  hostInputDTO;
+    }
+
+
 }
