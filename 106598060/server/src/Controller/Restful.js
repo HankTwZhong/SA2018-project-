@@ -7,6 +7,7 @@ import HostViewModel from '../Controller/HostViewModel'
 import ContactViewModel from '../Controller/ContactViewModel'
 import ContactUseCase from '../UseCase/ContactUseCase'
 import ContactInputDTO from '../UseCase/ContactInputDTO';
+import HostRepository from '../UseCase/HostRepository'
 
 var express = require('express')
 var app = express()
@@ -51,7 +52,7 @@ addHost(){
     res.send('There has same host')
     else{
       let hostInputDTO = new HostInputDTO(req.body.hostName,req.body.ipAddress, req.body.selected)
-      self.hostUseCase.addHost(hostInputDTO,function(){
+      self.hostUseCase.addHost(hostInputDTO,HostRepository,function(){
         res.send('Host: "'+ req.body.hostName + '" was added success')
       })
     }
@@ -61,7 +62,7 @@ deleteHost(){
   let self = this
   app.post('/deleteHost',function(req,res){
     clearInterval(setIntervalId)
-    self.hostUseCase.deleteHost(req.body.hostName,function(hostName){
+    self.hostUseCase.deleteHost(req.body.hostName,HostRepository,function(hostName){
       setIntervalId=self.initialUseCase.initialTimerFrequency()
       res.send('host "'+ hostName +' "has been delete')
       })

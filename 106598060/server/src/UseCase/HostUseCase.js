@@ -1,5 +1,4 @@
 import Host from '../Entity/Host'
-import ApplicationContext from './ApplicationContext'
 import CheckHostUseCase from './CheckHostUseCase'
 import HostOutputDTO from './HostOutputDTO'
 
@@ -16,24 +15,25 @@ export default class HostUseCase{
         return hostOutputDTO
     }
     
-    deleteHost(hostName,callback){
+    deleteHost(hostName,hostRepository,hostRecallback){
         let self = this
         this.applicationContext.deleteHost(hostName,((restHost,deletedHostName)=>{
             this.responseL = this.responseL.filter((hostData)=>{
                 return hostData.hostName !== hostName
             })
+            hostRepository.deleteHost(restHost)
             callback(deletedHostName)
         }))
     }
 
-    addHost(hostInputDTO,callback){
+    addHost(hostInputDTO,hostRepository,callback){
         var self =this
         let host = new Host(hostInputDTO.getHostName(), hostInputDTO.getIpAddress(), hostInputDTO.getSelected(),[],[])
-        this.applicationContext.addHost(host,(()=>{
-
+        this.applicationContext.addHost(host,((hostList)=>{
+            hostRepository.saveHost(hostList)
         }))
         let checkHostUseCase = new CheckHostUseCase()
-          checkHostUseCase.selectCommand(hostInputDTO,function(hostInfo){   
+        checkHostUseCase.selectCommand(host,function(hostInfo){   
             self.responseL.push(hostInfo)
             self.applicationContext.setResponseList(self.responseL)
             callback()

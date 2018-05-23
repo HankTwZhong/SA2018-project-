@@ -121,12 +121,10 @@ export default class ApplicationContext{
         })
         this.deleteObserver(hostName)
         this.deleteContact(hostName)
-        txtOperator.saveData('hostList',this.allHostList)  
         callback(this.allHostList,hostName)
     }
     addHost(hostObject,callback){
         this.allHostList.push(hostObject)
-        txtOperator.saveData('hostList',this.allHostList)          
         callback(this.allHostList)
     }
     addContact(hostName,contactInputDTO){
