@@ -13,12 +13,14 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "webpack-dev-server": ">=3.1.11",
     "axios": "^0.18.0",
     "vue": "^2.5.2",
     "vue-moment": "^3.2.0",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "webpack-dev-server": ">=3.1.11",
     "autoprefixer": "^7.1.2",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",

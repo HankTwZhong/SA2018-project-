@@ -12,6 +12,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "webpack-dev-server": ">=3.1.11",
     "axios": "^0.18.0",
     "jquery": "^3.3.1",
     "vue": "^2.5.2",
@@ -19,6 +20,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "webpack-dev-server": ">=3.1.11",
     "autoprefixer": "^7.1.2",
     "await": "^0.2.6",
     "babel-core": "^6.22.1",
